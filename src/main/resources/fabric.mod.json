@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "cobblemon_spawn_display",
+  "version": "${version}",
+  "name": "Cobblemon Spawn Display",
+  "description": "Shows every client-loaded Pokemon in a compact, class-sorted avatar grid.",
+  "authors": [
+    "abeck"
+  ],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.cobblemonspawndisplay.CobblemonSpawnDisplayClient"
+    ],
+    "modmenu": [
+      "com.cobblemonspawndisplay.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "cobblemon_spawn_display.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.17.2",
+    "fabric-api": ">=0.116.12+1.21.1",
+    "minecraft": "1.21.1",
+    "java": ">=21",
+    "cobblemon": ">=1.8.0"
+  }
+}

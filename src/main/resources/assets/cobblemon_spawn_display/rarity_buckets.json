@@ -1,0 +1,2738 @@
+{
+    "schemaVersion":  1,
+    "source":  {
+                   "sheetUrl":  "https://docs.google.com/spreadsheets/d/1qpUZhUhjp3NTLUzbdF7R_fcYi0Z8-Ky4gKR2FSGtNKs/edit?gid=985377545#gid=985377545",
+                   "csvExportUrl":  "https://docs.google.com/spreadsheets/d/1qpUZhUhjp3NTLUzbdF7R_fcYi0Z8-Ky4gKR2FSGtNKs/export?format=csv\u0026gid=985377545",
+                   "retrievedAtUtc":  "2026-08-08T15:25:56.4514278Z",
+                   "csvSha256":  "86b1bd095c7ed1a1a7573a13cb6d30c0b8036e4480d543cb91bf676035c381bb",
+                   "rowCount":  2255,
+                   "mappedRowCount":  2065,
+                   "dexCount":  840,
+                   "multiBucketDexCount":  194
+               },
+    "dexBuckets":  {
+                       "1":  [
+                                 "ultra-rare"
+                             ],
+                       "2":  [
+                                 "ultra-rare"
+                             ],
+                       "3":  [
+                                 "ultra-rare"
+                             ],
+                       "4":  [
+                                 "ultra-rare"
+                             ],
+                       "5":  [
+                                 "ultra-rare"
+                             ],
+                       "6":  [
+                                 "ultra-rare"
+                             ],
+                       "7":  [
+                                 "ultra-rare"
+                             ],
+                       "8":  [
+                                 "ultra-rare"
+                             ],
+                       "9":  [
+                                 "ultra-rare"
+                             ],
+                       "10":  [
+                                  "common"
+                              ],
+                       "11":  [
+                                  "common"
+                              ],
+                       "12":  [
+                                  "common"
+                              ],
+                       "13":  [
+                                  "common"
+                              ],
+                       "14":  [
+                                  "common"
+                              ],
+                       "15":  [
+                                  "common"
+                              ],
+                       "16":  [
+                                  "common"
+                              ],
+                       "17":  [
+                                  "common"
+                              ],
+                       "18":  [
+                                  "common"
+                              ],
+                       "19":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "20":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "21":  [
+                                  "common"
+                              ],
+                       "22":  [
+                                  "common"
+                              ],
+                       "23":  [
+                                  "common"
+                              ],
+                       "24":  [
+                                  "common"
+                              ],
+                       "25":  [
+                                  "uncommon"
+                              ],
+                       "26":  [
+                                  "uncommon"
+                              ],
+                       "27":  [
+                                  "common"
+                              ],
+                       "28":  [
+                                  "common"
+                              ],
+                       "29":  [
+                                  "uncommon"
+                              ],
+                       "30":  [
+                                  "uncommon"
+                              ],
+                       "31":  [
+                                  "uncommon"
+                              ],
+                       "32":  [
+                                  "uncommon"
+                              ],
+                       "33":  [
+                                  "uncommon"
+                              ],
+                       "34":  [
+                                  "uncommon"
+                              ],
+                       "35":  [
+                                  "uncommon"
+                              ],
+                       "36":  [
+                                  "uncommon"
+                              ],
+                       "37":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "38":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "39":  [
+                                  "common"
+                              ],
+                       "40":  [
+                                  "common"
+                              ],
+                       "41":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "42":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "43":  [
+                                  "common"
+                              ],
+                       "44":  [
+                                  "common"
+                              ],
+                       "45":  [
+                                  "common"
+                              ],
+                       "46":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "47":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "48":  [
+                                  "common"
+                              ],
+                       "49":  [
+                                  "common"
+                              ],
+                       "50":  [
+                                  "common"
+                              ],
+                       "51":  [
+                                  "common"
+                              ],
+                       "52":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "53":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "54":  [
+                                  "common"
+                              ],
+                       "55":  [
+                                  "common"
+                              ],
+                       "56":  [
+                                  "common"
+                              ],
+                       "57":  [
+                                  "common"
+                              ],
+                       "58":  [
+                                  "uncommon"
+                              ],
+                       "59":  [
+                                  "uncommon"
+                              ],
+                       "60":  [
+                                  "common"
+                              ],
+                       "61":  [
+                                  "common"
+                              ],
+                       "62":  [
+                                  "common"
+                              ],
+                       "63":  [
+                                  "common",
+                                  "uncommon",
+                                  "rare"
+                              ],
+                       "64":  [
+                                  "common",
+                                  "uncommon",
+                                  "rare"
+                              ],
+                       "65":  [
+                                  "common",
+                                  "uncommon",
+                                  "rare"
+                              ],
+                       "66":  [
+                                  "common"
+                              ],
+                       "67":  [
+                                  "common"
+                              ],
+                       "68":  [
+                                  "common"
+                              ],
+                       "69":  [
+                                  "common"
+                              ],
+                       "70":  [
+                                  "common"
+                              ],
+                       "71":  [
+                                  "common"
+                              ],
+                       "72":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "73":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "74":  [
+                                  "common"
+                              ],
+                       "75":  [
+                                  "common"
+                              ],
+                       "76":  [
+                                  "common"
+                              ],
+                       "77":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "78":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "79":  [
+                                  "common"
+                              ],
+                       "80":  [
+                                  "common"
+                              ],
+                       "81":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "82":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "83":  [
+                                  "common",
+                                  "rare"
+                              ],
+                       "84":  [
+                                  "common"
+                              ],
+                       "85":  [
+                                  "common"
+                              ],
+                       "86":  [
+                                  "common"
+                              ],
+                       "87":  [
+                                  "common"
+                              ],
+                       "88":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "89":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "90":  [
+                                  "common"
+                              ],
+                       "91":  [
+                                  "common"
+                              ],
+                       "92":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "93":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "94":  [
+                                  "common",
+                                  "uncommon"
+                              ],
+                       "95":  [
+                                  "uncommon"
+                              ],
+                       "96":  [
+                                  "common"
+                              ],
+                       "97":  [
+                                  "common"
+                              ],
+                       "98":  [
+                                  "common"
+                              ],
+                       "99":  [
+                                  "common"
+                              ],
+                       "100":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "101":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "102":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "103":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "104":  [
+                                   "common"
+                               ],
+                       "105":  [
+                                   "common"
+                               ],
+                       "106":  [
+                                   "uncommon"
+                               ],
+                       "107":  [
+                                   "uncommon"
+                               ],
+                       "108":  [
+                                   "uncommon"
+                               ],
+                       "109":  [
+                                   "common"
+                               ],
+                       "110":  [
+                                   "common"
+                               ],
+                       "111":  [
+                                   "common"
+                               ],
+                       "112":  [
+                                   "common"
+                               ],
+                       "113":  [
+                                   "rare"
+                               ],
+                       "114":  [
+                                   "common"
+                               ],
+                       "115":  [
+                                   "rare"
+                               ],
+                       "116":  [
+                                   "common"
+                               ],
+                       "117":  [
+                                   "common"
+                               ],
+                       "118":  [
+                                   "common"
+                               ],
+                       "119":  [
+                                   "common"
+                               ],
+                       "120":  [
+                                   "uncommon"
+                               ],
+                       "121":  [
+                                   "uncommon"
+                               ],
+                       "122":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "123":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "124":  [
+                                   "uncommon"
+                               ],
+                       "125":  [
+                                   "uncommon"
+                               ],
+                       "126":  [
+                                   "common"
+                               ],
+                       "127":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "128":  [
+                                   "common"
+                               ],
+                       "129":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "130":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "131":  [
+                                   "uncommon",
+                                   "ultra-rare"
+                               ],
+                       "132":  [
+                                   "ultra-rare"
+                               ],
+                       "133":  [
+                                   "uncommon",
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "134":  [
+                                   "uncommon",
+                                   "ultra-rare"
+                               ],
+                       "135":  [
+                                   "uncommon",
+                                   "ultra-rare"
+                               ],
+                       "136":  [
+                                   "uncommon",
+                                   "ultra-rare"
+                               ],
+                       "137":  [
+                                   "uncommon"
+                               ],
+                       "138":  [
+                                   "ultra-rare"
+                               ],
+                       "139":  [
+                                   "ultra-rare"
+                               ],
+                       "140":  [
+                                   "ultra-rare"
+                               ],
+                       "141":  [
+                                   "ultra-rare"
+                               ],
+                       "142":  [
+                                   "ultra-rare"
+                               ],
+                       "143":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "147":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "148":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "149":  [
+                                   "uncommon",
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "152":  [
+                                   "ultra-rare"
+                               ],
+                       "153":  [
+                                   "ultra-rare"
+                               ],
+                       "154":  [
+                                   "ultra-rare"
+                               ],
+                       "155":  [
+                                   "ultra-rare"
+                               ],
+                       "156":  [
+                                   "ultra-rare"
+                               ],
+                       "157":  [
+                                   "ultra-rare"
+                               ],
+                       "158":  [
+                                   "ultra-rare"
+                               ],
+                       "159":  [
+                                   "ultra-rare"
+                               ],
+                       "160":  [
+                                   "ultra-rare"
+                               ],
+                       "161":  [
+                                   "common"
+                               ],
+                       "162":  [
+                                   "common"
+                               ],
+                       "163":  [
+                                   "common"
+                               ],
+                       "164":  [
+                                   "common"
+                               ],
+                       "165":  [
+                                   "common"
+                               ],
+                       "166":  [
+                                   "common"
+                               ],
+                       "167":  [
+                                   "common"
+                               ],
+                       "168":  [
+                                   "common"
+                               ],
+                       "169":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "170":  [
+                                   "common"
+                               ],
+                       "171":  [
+                                   "common"
+                               ],
+                       "172":  [
+                                   "uncommon"
+                               ],
+                       "173":  [
+                                   "uncommon"
+                               ],
+                       "174":  [
+                                   "common"
+                               ],
+                       "175":  [
+                                   "rare"
+                               ],
+                       "176":  [
+                                   "rare"
+                               ],
+                       "177":  [
+                                   "common"
+                               ],
+                       "178":  [
+                                   "common"
+                               ],
+                       "180":  [
+                                   "common"
+                               ],
+                       "181":  [
+                                   "common"
+                               ],
+                       "182":  [
+                                   "common"
+                               ],
+                       "183":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "184":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "185":  [
+                                   "uncommon"
+                               ],
+                       "186":  [
+                                   "common"
+                               ],
+                       "187":  [
+                                   "common"
+                               ],
+                       "188":  [
+                                   "common"
+                               ],
+                       "189":  [
+                                   "common"
+                               ],
+                       "190":  [
+                                   "common"
+                               ],
+                       "191":  [
+                                   "common"
+                               ],
+                       "192":  [
+                                   "common"
+                               ],
+                       "193":  [
+                                   "uncommon"
+                               ],
+                       "194":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "195":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "196":  [
+                                   "uncommon",
+                                   "ultra-rare"
+                               ],
+                       "197":  [
+                                   "uncommon",
+                                   "ultra-rare"
+                               ],
+                       "198":  [
+                                   "common"
+                               ],
+                       "199":  [
+                                   "common"
+                               ],
+                       "200":  [
+                                   "common"
+                               ],
+                       "201":  [
+                                   "common"
+                               ],
+                       "202":  [
+                                   "rare"
+                               ],
+                       "203":  [
+                                   "common"
+                               ],
+                       "204":  [
+                                   "common"
+                               ],
+                       "205":  [
+                                   "common"
+                               ],
+                       "206":  [
+                                   "uncommon"
+                               ],
+                       "207":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "208":  [
+                                   "uncommon"
+                               ],
+                       "209":  [
+                                   "common"
+                               ],
+                       "210":  [
+                                   "common"
+                               ],
+                       "211":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "212":  [
+                                   "uncommon"
+                               ],
+                       "213":  [
+                                   "uncommon"
+                               ],
+                       "214":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "215":  [
+                                   "uncommon"
+                               ],
+                       "216":  [
+                                   "common"
+                               ],
+                       "217":  [
+                                   "common"
+                               ],
+                       "218":  [
+                                   "common"
+                               ],
+                       "219":  [
+                                   "common"
+                               ],
+                       "220":  [
+                                   "common"
+                               ],
+                       "221":  [
+                                   "common"
+                               ],
+                       "222":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "223":  [
+                                   "common"
+                               ],
+                       "224":  [
+                                   "common"
+                               ],
+                       "225":  [
+                                   "uncommon"
+                               ],
+                       "226":  [
+                                   "uncommon"
+                               ],
+                       "227":  [
+                                   "rare"
+                               ],
+                       "228":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "229":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "230":  [
+                                   "common"
+                               ],
+                       "231":  [
+                                   "common"
+                               ],
+                       "232":  [
+                                   "common"
+                               ],
+                       "233":  [
+                                   "uncommon"
+                               ],
+                       "234":  [
+                                   "common"
+                               ],
+                       "235":  [
+                                   "common",
+                                   "rare"
+                               ],
+                       "236":  [
+                                   "uncommon"
+                               ],
+                       "237":  [
+                                   "uncommon"
+                               ],
+                       "238":  [
+                                   "uncommon"
+                               ],
+                       "239":  [
+                                   "uncommon"
+                               ],
+                       "240":  [
+                                   "common"
+                               ],
+                       "241":  [
+                                   "common"
+                               ],
+                       "242":  [
+                                   "rare"
+                               ],
+                       "246":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "247":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "248":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "252":  [
+                                   "ultra-rare"
+                               ],
+                       "253":  [
+                                   "ultra-rare"
+                               ],
+                       "254":  [
+                                   "ultra-rare"
+                               ],
+                       "255":  [
+                                   "ultra-rare"
+                               ],
+                       "256":  [
+                                   "ultra-rare"
+                               ],
+                       "257":  [
+                                   "ultra-rare"
+                               ],
+                       "258":  [
+                                   "ultra-rare"
+                               ],
+                       "259":  [
+                                   "ultra-rare"
+                               ],
+                       "260":  [
+                                   "ultra-rare"
+                               ],
+                       "261":  [
+                                   "common"
+                               ],
+                       "262":  [
+                                   "common"
+                               ],
+                       "263":  [
+                                   "common"
+                               ],
+                       "264":  [
+                                   "common"
+                               ],
+                       "266":  [
+                                   "common"
+                               ],
+                       "267":  [
+                                   "common"
+                               ],
+                       "268":  [
+                                   "common"
+                               ],
+                       "269":  [
+                                   "common"
+                               ],
+                       "270":  [
+                                   "common"
+                               ],
+                       "271":  [
+                                   "common"
+                               ],
+                       "272":  [
+                                   "common"
+                               ],
+                       "273":  [
+                                   "common"
+                               ],
+                       "274":  [
+                                   "common"
+                               ],
+                       "275":  [
+                                   "common"
+                               ],
+                       "276":  [
+                                   "common"
+                               ],
+                       "277":  [
+                                   "common"
+                               ],
+                       "278":  [
+                                   "common"
+                               ],
+                       "279":  [
+                                   "common"
+                               ],
+                       "280":  [
+                                   "common",
+                                   "rare"
+                               ],
+                       "281":  [
+                                   "common",
+                                   "rare"
+                               ],
+                       "282":  [
+                                   "common",
+                                   "rare"
+                               ],
+                       "283":  [
+                                   "uncommon"
+                               ],
+                       "284":  [
+                                   "uncommon"
+                               ],
+                       "285":  [
+                                   "common"
+                               ],
+                       "286":  [
+                                   "common"
+                               ],
+                       "287":  [
+                                   "common"
+                               ],
+                       "288":  [
+                                   "common"
+                               ],
+                       "289":  [
+                                   "common"
+                               ],
+                       "290":  [
+                                   "common"
+                               ],
+                       "291":  [
+                                   "common"
+                               ],
+                       "292":  [
+                                   "uncommon"
+                               ],
+                       "293":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "294":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "295":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "296":  [
+                                   "common"
+                               ],
+                       "297":  [
+                                   "common"
+                               ],
+                       "298":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "299":  [
+                                   "uncommon"
+                               ],
+                       "301":  [
+                                   "common"
+                               ],
+                       "302":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "303":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "304":  [
+                                   "common"
+                               ],
+                       "305":  [
+                                   "common"
+                               ],
+                       "306":  [
+                                   "common"
+                               ],
+                       "307":  [
+                                   "common"
+                               ],
+                       "308":  [
+                                   "common"
+                               ],
+                       "309":  [
+                                   "common"
+                               ],
+                       "310":  [
+                                   "common"
+                               ],
+                       "311":  [
+                                   "uncommon"
+                               ],
+                       "312":  [
+                                   "uncommon"
+                               ],
+                       "313":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "314":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "315":  [
+                                   "common"
+                               ],
+                       "318":  [
+                                   "common"
+                               ],
+                       "319":  [
+                                   "common"
+                               ],
+                       "320":  [
+                                   "uncommon"
+                               ],
+                       "321":  [
+                                   "uncommon"
+                               ],
+                       "322":  [
+                                   "common"
+                               ],
+                       "323":  [
+                                   "common"
+                               ],
+                       "324":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "325":  [
+                                   "common"
+                               ],
+                       "326":  [
+                                   "common"
+                               ],
+                       "327":  [
+                                   "uncommon"
+                               ],
+                       "328":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "329":  [
+                                   "rare"
+                               ],
+                       "330":  [
+                                   "rare"
+                               ],
+                       "331":  [
+                                   "common"
+                               ],
+                       "332":  [
+                                   "common"
+                               ],
+                       "333":  [
+                                   "uncommon"
+                               ],
+                       "334":  [
+                                   "uncommon"
+                               ],
+                       "337":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "338":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "339":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "340":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "341":  [
+                                   "common"
+                               ],
+                       "342":  [
+                                   "common"
+                               ],
+                       "343":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "344":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "345":  [
+                                   "ultra-rare"
+                               ],
+                       "346":  [
+                                   "ultra-rare"
+                               ],
+                       "347":  [
+                                   "ultra-rare"
+                               ],
+                       "348":  [
+                                   "ultra-rare"
+                               ],
+                       "352":  [
+                                   "uncommon"
+                               ],
+                       "353":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "354":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "355":  [
+                                   "common"
+                               ],
+                       "356":  [
+                                   "common"
+                               ],
+                       "357":  [
+                                   "uncommon"
+                               ],
+                       "358":  [
+                                   "uncommon"
+                               ],
+                       "359":  [
+                                   "rare"
+                               ],
+                       "360":  [
+                                   "rare"
+                               ],
+                       "361":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "362":  [
+                                   "uncommon"
+                               ],
+                       "363":  [
+                                   "common"
+                               ],
+                       "364":  [
+                                   "common"
+                               ],
+                       "365":  [
+                                   "common"
+                               ],
+                       "366":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "367":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "368":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "369":  [
+                                   "common",
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "370":  [
+                                   "common"
+                               ],
+                       "371":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "372":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "373":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "374":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "375":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "376":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "387":  [
+                                   "ultra-rare"
+                               ],
+                       "388":  [
+                                   "ultra-rare"
+                               ],
+                       "389":  [
+                                   "ultra-rare"
+                               ],
+                       "390":  [
+                                   "ultra-rare"
+                               ],
+                       "391":  [
+                                   "ultra-rare"
+                               ],
+                       "392":  [
+                                   "ultra-rare"
+                               ],
+                       "393":  [
+                                   "ultra-rare"
+                               ],
+                       "394":  [
+                                   "ultra-rare"
+                               ],
+                       "395":  [
+                                   "ultra-rare"
+                               ],
+                       "396":  [
+                                   "common"
+                               ],
+                       "397":  [
+                                   "common"
+                               ],
+                       "398":  [
+                                   "common"
+                               ],
+                       "399":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "400":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "401":  [
+                                   "common"
+                               ],
+                       "402":  [
+                                   "common"
+                               ],
+                       "403":  [
+                                   "uncommon"
+                               ],
+                       "404":  [
+                                   "uncommon"
+                               ],
+                       "405":  [
+                                   "uncommon"
+                               ],
+                       "406":  [
+                                   "common"
+                               ],
+                       "407":  [
+                                   "common"
+                               ],
+                       "408":  [
+                                   "ultra-rare"
+                               ],
+                       "409":  [
+                                   "ultra-rare"
+                               ],
+                       "410":  [
+                                   "ultra-rare"
+                               ],
+                       "411":  [
+                                   "ultra-rare"
+                               ],
+                       "413":  [
+                                   "common"
+                               ],
+                       "414":  [
+                                   "common"
+                               ],
+                       "415":  [
+                                   "common"
+                               ],
+                       "416":  [
+                                   "common"
+                               ],
+                       "417":  [
+                                   "uncommon"
+                               ],
+                       "418":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "419":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "421":  [
+                                   "uncommon"
+                               ],
+                       "422":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "423":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "424":  [
+                                   "common"
+                               ],
+                       "425":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "426":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "427":  [
+                                   "common"
+                               ],
+                       "428":  [
+                                   "common"
+                               ],
+                       "429":  [
+                                   "common"
+                               ],
+                       "430":  [
+                                   "common"
+                               ],
+                       "431":  [
+                                   "common"
+                               ],
+                       "432":  [
+                                   "common"
+                               ],
+                       "433":  [
+                                   "uncommon"
+                               ],
+                       "435":  [
+                                   "ultra-rare"
+                               ],
+                       "436":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "437":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "438":  [
+                                   "uncommon"
+                               ],
+                       "439":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "440":  [
+                                   "rare"
+                               ],
+                       "441":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "442":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "443":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "444":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "445":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "446":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "447":  [
+                                   "rare"
+                               ],
+                       "448":  [
+                                   "rare"
+                               ],
+                       "449":  [
+                                   "common"
+                               ],
+                       "450":  [
+                                   "common"
+                               ],
+                       "451":  [
+                                   "common"
+                               ],
+                       "452":  [
+                                   "common"
+                               ],
+                       "453":  [
+                                   "common"
+                               ],
+                       "454":  [
+                                   "common"
+                               ],
+                       "455":  [
+                                   "uncommon"
+                               ],
+                       "456":  [
+                                   "common"
+                               ],
+                       "457":  [
+                                   "common"
+                               ],
+                       "458":  [
+                                   "uncommon"
+                               ],
+                       "460":  [
+                                   "uncommon"
+                               ],
+                       "461":  [
+                                   "uncommon"
+                               ],
+                       "462":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "463":  [
+                                   "uncommon"
+                               ],
+                       "464":  [
+                                   "common"
+                               ],
+                       "465":  [
+                                   "common"
+                               ],
+                       "466":  [
+                                   "uncommon"
+                               ],
+                       "467":  [
+                                   "common"
+                               ],
+                       "468":  [
+                                   "rare"
+                               ],
+                       "469":  [
+                                   "uncommon"
+                               ],
+                       "470":  [
+                                   "uncommon",
+                                   "ultra-rare"
+                               ],
+                       "471":  [
+                                   "uncommon",
+                                   "ultra-rare"
+                               ],
+                       "472":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "473":  [
+                                   "common"
+                               ],
+                       "474":  [
+                                   "uncommon"
+                               ],
+                       "475":  [
+                                   "common",
+                                   "rare"
+                               ],
+                       "476":  [
+                                   "uncommon"
+                               ],
+                       "477":  [
+                                   "common"
+                               ],
+                       "478":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "495":  [
+                                   "ultra-rare"
+                               ],
+                       "496":  [
+                                   "ultra-rare"
+                               ],
+                       "497":  [
+                                   "ultra-rare"
+                               ],
+                       "498":  [
+                                   "ultra-rare"
+                               ],
+                       "499":  [
+                                   "ultra-rare"
+                               ],
+                       "500":  [
+                                   "ultra-rare"
+                               ],
+                       "501":  [
+                                   "ultra-rare"
+                               ],
+                       "502":  [
+                                   "ultra-rare"
+                               ],
+                       "503":  [
+                                   "ultra-rare"
+                               ],
+                       "504":  [
+                                   "common"
+                               ],
+                       "505":  [
+                                   "common"
+                               ],
+                       "506":  [
+                                   "common"
+                               ],
+                       "507":  [
+                                   "common"
+                               ],
+                       "508":  [
+                                   "common"
+                               ],
+                       "509":  [
+                                   "common"
+                               ],
+                       "510":  [
+                                   "common"
+                               ],
+                       "511":  [
+                                   "uncommon"
+                               ],
+                       "512":  [
+                                   "uncommon"
+                               ],
+                       "513":  [
+                                   "uncommon"
+                               ],
+                       "514":  [
+                                   "uncommon"
+                               ],
+                       "515":  [
+                                   "uncommon"
+                               ],
+                       "516":  [
+                                   "uncommon"
+                               ],
+                       "517":  [
+                                   "common"
+                               ],
+                       "518":  [
+                                   "common"
+                               ],
+                       "519":  [
+                                   "common"
+                               ],
+                       "520":  [
+                                   "common"
+                               ],
+                       "521":  [
+                                   "common"
+                               ],
+                       "522":  [
+                                   "common"
+                               ],
+                       "523":  [
+                                   "common"
+                               ],
+                       "524":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "525":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "526":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "527":  [
+                                   "common"
+                               ],
+                       "528":  [
+                                   "common"
+                               ],
+                       "529":  [
+                                   "common"
+                               ],
+                       "530":  [
+                                   "common"
+                               ],
+                       "532":  [
+                                   "common"
+                               ],
+                       "533":  [
+                                   "common"
+                               ],
+                       "534":  [
+                                   "common"
+                               ],
+                       "538":  [
+                                   "uncommon"
+                               ],
+                       "539":  [
+                                   "uncommon"
+                               ],
+                       "540":  [
+                                   "common"
+                               ],
+                       "541":  [
+                                   "common"
+                               ],
+                       "542":  [
+                                   "common"
+                               ],
+                       "543":  [
+                                   "common"
+                               ],
+                       "544":  [
+                                   "common"
+                               ],
+                       "545":  [
+                                   "common"
+                               ],
+                       "546":  [
+                                   "common"
+                               ],
+                       "547":  [
+                                   "common"
+                               ],
+                       "548":  [
+                                   "common"
+                               ],
+                       "549":  [
+                                   "common"
+                               ],
+                       "550":  [
+                                   "common"
+                               ],
+                       "551":  [
+                                   "common"
+                               ],
+                       "552":  [
+                                   "common"
+                               ],
+                       "553":  [
+                                   "common"
+                               ],
+                       "554":  [
+                                   "common"
+                               ],
+                       "555":  [
+                                   "common"
+                               ],
+                       "556":  [
+                                   "common"
+                               ],
+                       "557":  [
+                                   "common"
+                               ],
+                       "558":  [
+                                   "common"
+                               ],
+                       "559":  [
+                                   "common"
+                               ],
+                       "560":  [
+                                   "common"
+                               ],
+                       "561":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "562":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "563":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "564":  [
+                                   "ultra-rare"
+                               ],
+                       "565":  [
+                                   "ultra-rare"
+                               ],
+                       "566":  [
+                                   "ultra-rare"
+                               ],
+                       "567":  [
+                                   "ultra-rare"
+                               ],
+                       "568":  [
+                                   "common"
+                               ],
+                       "569":  [
+                                   "common"
+                               ],
+                       "570":  [
+                                   "uncommon"
+                               ],
+                       "571":  [
+                                   "uncommon"
+                               ],
+                       "572":  [
+                                   "common"
+                               ],
+                       "573":  [
+                                   "common"
+                               ],
+                       "574":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "575":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "576":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "577":  [
+                                   "uncommon"
+                               ],
+                       "578":  [
+                                   "uncommon"
+                               ],
+                       "579":  [
+                                   "uncommon"
+                               ],
+                       "580":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "581":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "582":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "583":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "584":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "585":  [
+                                   "common"
+                               ],
+                       "586":  [
+                                   "common"
+                               ],
+                       "587":  [
+                                   "uncommon"
+                               ],
+                       "588":  [
+                                   "common"
+                               ],
+                       "589":  [
+                                   "common"
+                               ],
+                       "590":  [
+                                   "common"
+                               ],
+                       "591":  [
+                                   "common"
+                               ],
+                       "592":  [
+                                   "common"
+                               ],
+                       "593":  [
+                                   "common"
+                               ],
+                       "594":  [
+                                   "uncommon"
+                               ],
+                       "595":  [
+                                   "common"
+                               ],
+                       "596":  [
+                                   "common"
+                               ],
+                       "597":  [
+                                   "common"
+                               ],
+                       "598":  [
+                                   "common"
+                               ],
+                       "599":  [
+                                   "common"
+                               ],
+                       "600":  [
+                                   "common"
+                               ],
+                       "601":  [
+                                   "common"
+                               ],
+                       "602":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "603":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "604":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "605":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "606":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "607":  [
+                                   "common"
+                               ],
+                       "608":  [
+                                   "common"
+                               ],
+                       "609":  [
+                                   "common"
+                               ],
+                       "610":  [
+                                   "ultra-rare"
+                               ],
+                       "611":  [
+                                   "ultra-rare"
+                               ],
+                       "612":  [
+                                   "ultra-rare"
+                               ],
+                       "613":  [
+                                   "common"
+                               ],
+                       "614":  [
+                                   "common"
+                               ],
+                       "615":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "616":  [
+                                   "common"
+                               ],
+                       "617":  [
+                                   "common"
+                               ],
+                       "618":  [
+                                   "common"
+                               ],
+                       "619":  [
+                                   "uncommon"
+                               ],
+                       "620":  [
+                                   "uncommon"
+                               ],
+                       "621":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "622":  [
+                                   "common",
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "623":  [
+                                   "common",
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "625":  [
+                                   "rare"
+                               ],
+                       "626":  [
+                                   "common"
+                               ],
+                       "627":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "628":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "631":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "632":  [
+                                   "common"
+                               ],
+                       "633":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "634":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "635":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "636":  [
+                                   "uncommon"
+                               ],
+                       "637":  [
+                                   "uncommon"
+                               ],
+                       "650":  [
+                                   "ultra-rare"
+                               ],
+                       "651":  [
+                                   "ultra-rare"
+                               ],
+                       "652":  [
+                                   "ultra-rare"
+                               ],
+                       "653":  [
+                                   "ultra-rare"
+                               ],
+                       "654":  [
+                                   "ultra-rare"
+                               ],
+                       "655":  [
+                                   "ultra-rare"
+                               ],
+                       "656":  [
+                                   "ultra-rare"
+                               ],
+                       "657":  [
+                                   "ultra-rare"
+                               ],
+                       "658":  [
+                                   "ultra-rare"
+                               ],
+                       "659":  [
+                                   "common"
+                               ],
+                       "660":  [
+                                   "common"
+                               ],
+                       "661":  [
+                                   "common"
+                               ],
+                       "662":  [
+                                   "common"
+                               ],
+                       "663":  [
+                                   "common"
+                               ],
+                       "664":  [
+                                   "common"
+                               ],
+                       "665":  [
+                                   "common"
+                               ],
+                       "666":  [
+                                   "common"
+                               ],
+                       "667":  [
+                                   "common"
+                               ],
+                       "668":  [
+                                   "common"
+                               ],
+                       "669":  [
+                                   "common"
+                               ],
+                       "670":  [
+                                   "common"
+                               ],
+                       "671":  [
+                                   "common"
+                               ],
+                       "672":  [
+                                   "common"
+                               ],
+                       "673":  [
+                                   "common"
+                               ],
+                       "676":  [
+                                   "common"
+                               ],
+                       "677":  [
+                                   "common"
+                               ],
+                       "678":  [
+                                   "common"
+                               ],
+                       "679":  [
+                                   "uncommon"
+                               ],
+                       "680":  [
+                                   "uncommon"
+                               ],
+                       "681":  [
+                                   "uncommon"
+                               ],
+                       "682":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "683":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "684":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "685":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "686":  [
+                                   "uncommon"
+                               ],
+                       "687":  [
+                                   "uncommon"
+                               ],
+                       "688":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "689":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "690":  [
+                                   "common"
+                               ],
+                       "691":  [
+                                   "common"
+                               ],
+                       "692":  [
+                                   "common"
+                               ],
+                       "693":  [
+                                   "common"
+                               ],
+                       "696":  [
+                                   "ultra-rare"
+                               ],
+                       "697":  [
+                                   "ultra-rare"
+                               ],
+                       "698":  [
+                                   "ultra-rare"
+                               ],
+                       "699":  [
+                                   "ultra-rare"
+                               ],
+                       "700":  [
+                                   "uncommon",
+                                   "ultra-rare"
+                               ],
+                       "701":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "702":  [
+                                   "uncommon"
+                               ],
+                       "703":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "704":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "705":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "706":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "707":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "708":  [
+                                   "common"
+                               ],
+                       "709":  [
+                                   "common"
+                               ],
+                       "710":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "711":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "712":  [
+                                   "common"
+                               ],
+                       "713":  [
+                                   "common"
+                               ],
+                       "714":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "715":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "722":  [
+                                   "ultra-rare"
+                               ],
+                       "723":  [
+                                   "ultra-rare"
+                               ],
+                       "724":  [
+                                   "ultra-rare"
+                               ],
+                       "725":  [
+                                   "ultra-rare"
+                               ],
+                       "726":  [
+                                   "ultra-rare"
+                               ],
+                       "727":  [
+                                   "ultra-rare"
+                               ],
+                       "728":  [
+                                   "ultra-rare"
+                               ],
+                       "729":  [
+                                   "ultra-rare"
+                               ],
+                       "730":  [
+                                   "ultra-rare"
+                               ],
+                       "731":  [
+                                   "common"
+                               ],
+                       "732":  [
+                                   "common"
+                               ],
+                       "733":  [
+                                   "common"
+                               ],
+                       "734":  [
+                                   "common"
+                               ],
+                       "735":  [
+                                   "common"
+                               ],
+                       "739":  [
+                                   "common"
+                               ],
+                       "740":  [
+                                   "uncommon"
+                               ],
+                       "742":  [
+                                   "common"
+                               ],
+                       "743":  [
+                                   "common"
+                               ],
+                       "745":  [
+                                   "uncommon"
+                               ],
+                       "746":  [
+                                   "common"
+                               ],
+                       "747":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "748":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "749":  [
+                                   "common"
+                               ],
+                       "750":  [
+                                   "common"
+                               ],
+                       "751":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "752":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "753":  [
+                                   "common"
+                               ],
+                       "754":  [
+                                   "common"
+                               ],
+                       "755":  [
+                                   "common"
+                               ],
+                       "756":  [
+                                   "common"
+                               ],
+                       "757":  [
+                                   "common"
+                               ],
+                       "758":  [
+                                   "common"
+                               ],
+                       "759":  [
+                                   "common"
+                               ],
+                       "760":  [
+                                   "common"
+                               ],
+                       "761":  [
+                                   "common"
+                               ],
+                       "762":  [
+                                   "common"
+                               ],
+                       "763":  [
+                                   "common"
+                               ],
+                       "764":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "767":  [
+                                   "uncommon"
+                               ],
+                       "768":  [
+                                   "uncommon"
+                               ],
+                       "769":  [
+                                   "common"
+                               ],
+                       "770":  [
+                                   "common"
+                               ],
+                       "771":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "775":  [
+                                   "common"
+                               ],
+                       "776":  [
+                                   "uncommon"
+                               ],
+                       "777":  [
+                                   "uncommon"
+                               ],
+                       "778":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "779":  [
+                                   "uncommon"
+                               ],
+                       "780":  [
+                                   "uncommon"
+                               ],
+                       "781":  [
+                                   "common"
+                               ],
+                       "782":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "783":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "784":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "810":  [
+                                   "ultra-rare"
+                               ],
+                       "811":  [
+                                   "ultra-rare"
+                               ],
+                       "812":  [
+                                   "ultra-rare"
+                               ],
+                       "813":  [
+                                   "ultra-rare"
+                               ],
+                       "814":  [
+                                   "ultra-rare"
+                               ],
+                       "815":  [
+                                   "ultra-rare"
+                               ],
+                       "816":  [
+                                   "ultra-rare"
+                               ],
+                       "817":  [
+                                   "ultra-rare"
+                               ],
+                       "818":  [
+                                   "ultra-rare"
+                               ],
+                       "819":  [
+                                   "common"
+                               ],
+                       "820":  [
+                                   "common"
+                               ],
+                       "821":  [
+                                   "common"
+                               ],
+                       "822":  [
+                                   "common"
+                               ],
+                       "823":  [
+                                   "common"
+                               ],
+                       "825":  [
+                                   "common"
+                               ],
+                       "826":  [
+                                   "rare"
+                               ],
+                       "827":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "828":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "829":  [
+                                   "common"
+                               ],
+                       "830":  [
+                                   "common"
+                               ],
+                       "831":  [
+                                   "common"
+                               ],
+                       "832":  [
+                                   "common"
+                               ],
+                       "833":  [
+                                   "common"
+                               ],
+                       "834":  [
+                                   "common"
+                               ],
+                       "835":  [
+                                   "common"
+                               ],
+                       "836":  [
+                                   "common"
+                               ],
+                       "838":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "839":  [
+                                   "rare",
+                                   "ultra-rare"
+                               ],
+                       "843":  [
+                                   "common"
+                               ],
+                       "844":  [
+                                   "common"
+                               ],
+                       "845":  [
+                                   "uncommon"
+                               ],
+                       "846":  [
+                                   "common"
+                               ],
+                       "847":  [
+                                   "common"
+                               ],
+                       "848":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "849":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "850":  [
+                                   "common"
+                               ],
+                       "851":  [
+                                   "common"
+                               ],
+                       "852":  [
+                                   "uncommon"
+                               ],
+                       "853":  [
+                                   "uncommon"
+                               ],
+                       "854":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "855":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "856":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "857":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "858":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "859":  [
+                                   "common"
+                               ],
+                       "860":  [
+                                   "common"
+                               ],
+                       "861":  [
+                                   "common"
+                               ],
+                       "862":  [
+                                   "common"
+                               ],
+                       "863":  [
+                                   "common"
+                               ],
+                       "864":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "865":  [
+                                   "rare"
+                               ],
+                       "866":  [
+                                   "uncommon"
+                               ],
+                       "867":  [
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "868":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "869":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "870":  [
+                                   "uncommon"
+                               ],
+                       "871":  [
+                                   "uncommon"
+                               ],
+                       "873":  [
+                                   "uncommon"
+                               ],
+                       "874":  [
+                                   "common",
+                                   "uncommon",
+                                   "rare"
+                               ],
+                       "875":  [
+                                   "common"
+                               ],
+                       "877":  [
+                                   "uncommon"
+                               ],
+                       "878":  [
+                                   "uncommon"
+                               ],
+                       "879":  [
+                                   "uncommon"
+                               ],
+                       "885":  [
+                                   "ultra-rare"
+                               ],
+                       "886":  [
+                                   "ultra-rare"
+                               ],
+                       "887":  [
+                                   "ultra-rare"
+                               ],
+                       "899":  [
+                                   "common"
+                               ],
+                       "900":  [
+                                   "rare"
+                               ],
+                       "901":  [
+                                   "common"
+                               ],
+                       "902":  [
+                                   "common"
+                               ],
+                       "903":  [
+                                   "uncommon"
+                               ],
+                       "904":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "906":  [
+                                   "ultra-rare"
+                               ],
+                       "907":  [
+                                   "ultra-rare"
+                               ],
+                       "908":  [
+                                   "ultra-rare"
+                               ],
+                       "909":  [
+                                   "ultra-rare"
+                               ],
+                       "910":  [
+                                   "ultra-rare"
+                               ],
+                       "911":  [
+                                   "ultra-rare"
+                               ],
+                       "912":  [
+                                   "ultra-rare"
+                               ],
+                       "913":  [
+                                   "ultra-rare"
+                               ],
+                       "914":  [
+                                   "ultra-rare"
+                               ],
+                       "915":  [
+                                   "common"
+                               ],
+                       "916":  [
+                                   "common"
+                               ],
+                       "917":  [
+                                   "common"
+                               ],
+                       "918":  [
+                                   "common"
+                               ],
+                       "920":  [
+                                   "common"
+                               ],
+                       "924":  [
+                                   "common"
+                               ],
+                       "925":  [
+                                   "common"
+                               ],
+                       "926":  [
+                                   "common"
+                               ],
+                       "927":  [
+                                   "common"
+                               ],
+                       "928":  [
+                                   "uncommon"
+                               ],
+                       "929":  [
+                                   "uncommon"
+                               ],
+                       "930":  [
+                                   "uncommon"
+                               ],
+                       "931":  [
+                                   "common"
+                               ],
+                       "932":  [
+                                   "common"
+                               ],
+                       "933":  [
+                                   "common"
+                               ],
+                       "934":  [
+                                   "common"
+                               ],
+                       "935":  [
+                                   "uncommon"
+                               ],
+                       "936":  [
+                                   "uncommon"
+                               ],
+                       "937":  [
+                                   "uncommon"
+                               ],
+                       "938":  [
+                                   "common"
+                               ],
+                       "939":  [
+                                   "common"
+                               ],
+                       "940":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "941":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "942":  [
+                                   "common"
+                               ],
+                       "943":  [
+                                   "common"
+                               ],
+                       "944":  [
+                                   "common"
+                               ],
+                       "945":  [
+                                   "common"
+                               ],
+                       "946":  [
+                                   "common"
+                               ],
+                       "947":  [
+                                   "common"
+                               ],
+                       "948":  [
+                                   "common"
+                               ],
+                       "949":  [
+                                   "common"
+                               ],
+                       "950":  [
+                                   "uncommon"
+                               ],
+                       "951":  [
+                                   "common"
+                               ],
+                       "952":  [
+                                   "common"
+                               ],
+                       "953":  [
+                                   "common"
+                               ],
+                       "954":  [
+                                   "common"
+                               ],
+                       "955":  [
+                                   "uncommon"
+                               ],
+                       "956":  [
+                                   "uncommon"
+                               ],
+                       "957":  [
+                                   "common"
+                               ],
+                       "958":  [
+                                   "common"
+                               ],
+                       "959":  [
+                                   "common"
+                               ],
+                       "960":  [
+                                   "common"
+                               ],
+                       "961":  [
+                                   "common"
+                               ],
+                       "963":  [
+                                   "uncommon"
+                               ],
+                       "964":  [
+                                   "uncommon"
+                               ],
+                       "965":  [
+                                   "uncommon"
+                               ],
+                       "966":  [
+                                   "uncommon"
+                               ],
+                       "967":  [
+                                   "rare"
+                               ],
+                       "968":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "969":  [
+                                   "common"
+                               ],
+                       "970":  [
+                                   "common"
+                               ],
+                       "973":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "974":  [
+                                   "uncommon"
+                               ],
+                       "975":  [
+                                   "uncommon"
+                               ],
+                       "976":  [
+                                   "uncommon"
+                               ],
+                       "977":  [
+                                   "rare"
+                               ],
+                       "978":  [
+                                   "rare"
+                               ],
+                       "979":  [
+                                   "common"
+                               ],
+                       "980":  [
+                                   "common",
+                                   "uncommon"
+                               ],
+                       "981":  [
+                                   "common"
+                               ],
+                       "982":  [
+                                   "uncommon"
+                               ],
+                       "998":  [
+                                   "ultra-rare"
+                               ],
+                       "999":  [
+                                   "common",
+                                   "rare"
+                               ],
+                       "1012":  [
+                                    "uncommon"
+                                ],
+                       "1013":  [
+                                    "uncommon"
+                                ]
+                   }
+}

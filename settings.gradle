@@ -1,0 +1,14 @@
+pluginManagement {
+	plugins {
+		id "fabric-loom" version "1.11.8"
+	}
+	repositories {
+		maven {
+			name = "Fabric"
+			url = "https://maven.fabricmc.net/"
+		}
+		gradlePluginPortal()
+	}
+}
+
+rootProject.name = "cobblemon-spawn-display"
