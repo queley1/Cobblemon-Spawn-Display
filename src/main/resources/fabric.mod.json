@@ -3,7 +3,7 @@
   "id": "cobblemon_spawn_display",
   "version": "${version}",
   "name": "Cobblemon Spawn Display",
-  "description": "Shows every client-loaded Pokemon in a compact, class-sorted avatar grid.",
+  "description": "Shows every client-loaded Pokemon in a compact, class-sorted avatar grid. Built for Mythical Launcher's Cobblemon Realms pack and its Cobblemon development snapshot.",
   "authors": [
     "abeck"
   ],
@@ -25,6 +25,13 @@
     "fabric-api": ">=0.116.12+1.21.1",
     "minecraft": "1.21.1",
     "java": ">=21",
-    "cobblemon": ">=1.8.0"
+    "cobblemon": "1.8.0+1.21.1-main-c7488d5"
+  },
+  "custom": {
+    "cobblemon_spawn_display": {
+      "target_pack": "Mythical Launcher Cobblemon Realms",
+      "target_cobblemon_build": "1.8.0+1.21.1-main-c7488d5",
+      "public_cobblemon_release_compatible": false
+    }
   }
 }

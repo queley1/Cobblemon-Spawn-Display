@@ -1,7 +1,11 @@
 # Cobblemon Spawn Display
 
-A client-side Fabric mod for Minecraft 1.21.1 and the Cobblemon 1.8.0 build in
-the Cobblemon Realms pack. It adds a compact HUD grid in the top-left corner
+A client-side Fabric mod for Minecraft 1.21.1, built specifically for Mythical
+Launcher's **Cobblemon Realms** pack. It is built and tested against the
+pack's bundled Cobblemon development snapshot,
+`1.8.0+1.21.1-main-c7488d5`; this is **not** an official public Cobblemon 1.8.0
+release, because no such release exists. Public Cobblemon installations need a
+separately compatible build. It adds a compact HUD grid in the top-left corner
 containing every Pokemon entity currently loaded by the client.
 
 Entries are sorted by Mythical, Legendary, Ultra Beast, Paradox, Alpha, Shiny,
@@ -82,13 +86,14 @@ snapshot from the published spawn-bucket sheet.
 
 ## Build
 
-The project requires Java 21 plus local copies of the Cobblemon 1.8.0 Fabric
-JAR and Mod Menu 11.0.4 JAR. Point Gradle at the installed JARs, then build
-from the repository root on Windows:
+The project requires Java 21 plus the exact Cobblemon Fabric development
+snapshot bundled by Mythical Launcher's Cobblemon Realms pack and Mod Menu
+11.0.4. Point Gradle at local copies of those JARs, then build from the
+repository root on Windows:
 
 ```powershell
 $env:JAVA_HOME = "C:\path\to\jdk-21"
-$env:COBBLEMON_JAR = "C:\path\to\Cobblemon-fabric-1.8.0+1.21.1.jar"
+$env:COBBLEMON_JAR = "C:\path\to\Cobblemon-fabric-1.8.0+1.21.1-main-c7488d5.jar"
 $env:MODMENU_JAR = "C:\path\to\modmenu-11.0.4.jar"
 .\gradlew.bat build
 ```
@@ -98,5 +103,6 @@ Alternatively, copy the dependencies to `libs/Cobblemon.jar` and
 
 The finished JAR is written to `build/libs/`.
 
-For this Mythical Launcher instance, place the JAR in the instance's
-`user-mods` directory so the launcher keeps it across pack updates.
+For the target Mythical Launcher Cobblemon Realms instance, place the JAR in
+the instance's `user-mods` directory so the launcher keeps it across pack
+updates.
