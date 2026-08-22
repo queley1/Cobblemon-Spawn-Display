@@ -5,10 +5,11 @@
   "name": "Cobblemon Spawn Display",
   "description": "Shows every client-loaded Pokemon in a compact, class-sorted avatar grid. Built for Mythical Launcher's Cobblemon Realms pack and its Cobblemon development snapshot.",
   "authors": [
-    "abeck"
+    "queley"
   ],
   "license": "MIT",
   "environment": "client",
+  "icon": "assets/cobblemon_spawn_display/icon.png",
   "entrypoints": {
     "client": [
       "com.cobblemonspawndisplay.CobblemonSpawnDisplayClient"

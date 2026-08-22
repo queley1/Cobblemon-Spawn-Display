@@ -46,9 +46,9 @@ public final class SpawnDisplayConfig {
 	private static final int LEGACY_DEFAULT_PARADOX_BORDER_COLOR = 0xBD93F9;
 	private static final int DEFAULT_PARADOX_BACKGROUND_COLOR = 0xBD93F9;
 	private static final int DEFAULT_PARADOX_BORDER_COLOR = 0xFF5555;
-	private static final int DEFAULT_ROW_LENGTH = 8;
-	private static final int DEFAULT_TILE_SIZE = 30;
-	private static final int DEFAULT_SPACING = 2;
+	private static final int DEFAULT_ROW_LENGTH = 9;
+	private static final int DEFAULT_TILE_SIZE = 24;
+	private static final int DEFAULT_SPACING = 1;
 	private static final int DEFAULT_UPDATE_INTERVAL_TICKS = 5;
 	private static final boolean DEFAULT_SHOW_COMMONS = true;
 	private static final boolean DEFAULT_DISABLE_SPRITE_ANIMATIONS = false;

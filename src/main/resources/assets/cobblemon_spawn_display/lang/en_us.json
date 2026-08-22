@@ -7,7 +7,7 @@
   "screen.cobblemon_spawn_display.highlights": "Highlights",
   "screen.cobblemon_spawn_display.colors": "Colors",
   "screen.cobblemon_spawn_display.highlight_search": "Search Pokémon",
-  "screen.cobblemon_spawn_display.highlight_search_placeholder": "Search by name or Pokédex number…",
+  "screen.cobblemon_spawn_display.highlight_search_placeholder": "Search",
   "screen.cobblemon_spawn_display.highlight_summary": "Highlighted Spawns (%s)",
   "screen.cobblemon_spawn_display.highlight_none": "None selected.",
   "screen.cobblemon_spawn_display.highlight_add": "Add",
