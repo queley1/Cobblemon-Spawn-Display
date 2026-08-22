@@ -36,6 +36,11 @@ has no background plate. Tile interiors are translucent and darkened for avatar
 contrast. Ultra rare remains pink by default. By default, 30-pixel tiles fill
 from left to right and wrap after eight entries.
 
+While a game screen is open and the mouse cursor is visible, click a Pokemon
+tile to pin it ahead of the normal sort order. Pinned tiles use an animated
+orange border, and the most recently pinned tile appears first. Click a pinned
+tile again to unpin it. Pins last until that Pokemon is no longer loaded.
+
 Open **Configure** from Mod Menu to access **Spawn Display Settings**. Each
 class and split-color role has its own selector button on the Colors page, so
 none are hidden behind a cycling control. Each selector's background previews

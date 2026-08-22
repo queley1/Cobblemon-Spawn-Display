@@ -34,6 +34,7 @@ public final class SpawnHud {
 	private static final int BASE_TILE_SIZE = 30;
 	private static final int BASE_FOOTER_Y_OFFSET = 20;
 	private static final int BORDER_ANIMATION_PERIOD_TICKS = 80;
+	private static final int[] PINNED_BORDER_COLORS = {0xFFFF6A00, 0xFFFFB347, 0xFFFF8C00};
 	private static final char SPECIAL_SKIN_BADGE = '\uE000';
 	private static final int SPECIAL_SKIN_BADGE_SIZE = 9;
 	private static final Identifier SPECIAL_SKIN_BADGE_TEXTURE = Identifier.of(
@@ -42,8 +43,10 @@ public final class SpawnHud {
 	);
 	private static final String[] DIRECTION_ARROWS = {"↑", "↗", "→", "↘", "↓", "↙", "←", "↖"};
 	private static final Map<UUID, FloatingState> AVATAR_STATES = new HashMap<>();
+	private static final Map<UUID, Long> PINNED_ENTRIES = new HashMap<>();
 	private static final Set<Identifier> REPORTED_AVATAR_FAILURES = new HashSet<>();
 	private static List<Entry> entries = List.of();
+	private static long nextPinnedOrder;
 	private static int refreshCountdown;
 
 	private SpawnHud() {
@@ -61,6 +64,8 @@ public final class SpawnHud {
 		if (client.world == null || client.player == null) {
 			entries = List.of();
 			AVATAR_STATES.clear();
+			PINNED_ENTRIES.clear();
+			nextPinnedOrder = 0;
 			refreshCountdown = 0;
 			return;
 		}
@@ -141,8 +146,17 @@ public final class SpawnHud {
 		}
 
 		AVATAR_STATES.keySet().retainAll(visiblePokemon);
-		discovered.sort(
-				Comparator.comparing(
+		PINNED_ENTRIES.keySet().retainAll(visiblePokemon);
+		discovered.sort(entryComparator());
+		entries = List.copyOf(discovered);
+	}
+
+	private static Comparator<Entry> entryComparator() {
+		return Comparator.comparingLong(
+				(Entry entry) -> PINNED_ENTRIES.getOrDefault(entry.entity().getUuid(), Long.MIN_VALUE)
+		)
+				.reversed()
+				.thenComparing(Comparator.comparing(
 						(Entry entry) -> entry.hasClassification(SpecialClassification.MYTHICAL),
 						Comparator.reverseOrder()
 				)
@@ -163,9 +177,44 @@ public final class SpawnHud {
 						.thenComparing(Entry::isFossil, Comparator.reverseOrder())
 						.thenComparing(Entry::tera, Comparator.reverseOrder())
 						.thenComparing(Comparator.comparingInt(Entry::rarityRank).reversed())
-						.thenComparingDouble(Entry::distanceSquared)
-		);
-		entries = List.copyOf(discovered);
+						.thenComparingDouble(Entry::distanceSquared));
+	}
+
+	public static boolean handleClick(double mouseX, double mouseY) {
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (client.world == null || client.player == null || client.options.hudHidden || entries.isEmpty()) {
+			return false;
+		}
+
+		SpawnDisplayConfig config = SpawnDisplayConfig.get();
+		int tileSize = config.getTileSize();
+		int tileStride = tileSize + config.getSpacing();
+		if (mouseX < MARGIN || mouseY < MARGIN) {
+			return false;
+		}
+
+		int column = (int) ((mouseX - MARGIN) / tileStride);
+		int row = (int) ((mouseY - MARGIN) / tileStride);
+		if (column >= config.getRowLength()
+				|| (mouseX - MARGIN) % tileStride >= tileSize
+				|| (mouseY - MARGIN) % tileStride >= tileSize) {
+			return false;
+		}
+
+		int entryIndex = row * config.getRowLength() + column;
+		if (entryIndex < 0 || entryIndex >= entries.size()) {
+			return false;
+		}
+
+		UUID entityId = entries.get(entryIndex).entity().getUuid();
+		if (PINNED_ENTRIES.remove(entityId) == null) {
+			PINNED_ENTRIES.put(entityId, nextPinnedOrder++);
+		}
+
+		List<Entry> reordered = new ArrayList<>(entries);
+		reordered.sort(entryComparator());
+		entries = List.copyOf(reordered);
+		return true;
 	}
 
 	public static void render(DrawContext context, RenderTickCounter tickCounter) {
@@ -210,7 +259,21 @@ public final class SpawnHud {
 				y + tileSize - 1,
 				config.getBackgroundColor(tileStyle.backgroundColor())
 		);
-		if (entry.shiny() || entry.alpha() || entry.tera() || entry.fossilStatus()) {
+		if (PINNED_ENTRIES.containsKey(entry.entity().getUuid())) {
+			float borderAnimationProgress = config.shouldDisableSpriteAnimations()
+					? 0.0F
+					: ((client.world.getTime() % BORDER_ANIMATION_PERIOD_TICKS) + tickDelta)
+							/ BORDER_ANIMATION_PERIOD_TICKS;
+			renderAnimatedGradientBorder(
+					context,
+					x,
+					y,
+					tileSize,
+					borderAnimationProgress,
+					PINNED_BORDER_COLORS,
+					PINNED_BORDER_COLORS.length
+			);
+		} else if (entry.shiny() || entry.alpha() || entry.tera() || entry.fossilStatus()) {
 			float borderAnimationProgress = config.shouldDisableSpriteAnimations()
 					? 0.0F
 					: ((client.world.getTime() % BORDER_ANIMATION_PERIOD_TICKS) + tickDelta)
