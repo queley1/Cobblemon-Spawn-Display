@@ -6,12 +6,16 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.util.Identifier;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedHashSet;
+import java.util.Locale;
+import java.util.Set;
 
 /** Persistent, client-side settings for the spawn HUD. */
 public final class SpawnDisplayConfig {
@@ -23,7 +27,6 @@ public final class SpawnDisplayConfig {
 	public static final int MAX_SPACING = 16;
 	public static final int MIN_UPDATE_INTERVAL_TICKS = 1;
 	public static final int MAX_UPDATE_INTERVAL_TICKS = 100;
-
 	private static final int DEFAULT_BACKGROUND_OPACITY = 192;
 	private static final int BACKGROUND_BRIGHTNESS_PERCENT = 65;
 	private static final int DEFAULT_COMMON_COLOR = 0x55FF55;
@@ -77,6 +80,8 @@ public final class SpawnDisplayConfig {
 	private boolean showCommons = DEFAULT_SHOW_COMMONS;
 	private boolean disableSpriteAnimations = DEFAULT_DISABLE_SPRITE_ANIMATIONS;
 	private boolean horizontalDistance = DEFAULT_HORIZONTAL_DISTANCE;
+	private String highlightedPokemon = "";
+	private Set<String> highlightedSpecies = Set.of();
 
 	private SpawnDisplayConfig() {
 	}
@@ -209,6 +214,14 @@ public final class SpawnDisplayConfig {
 		return horizontalDistance;
 	}
 
+	public boolean shouldHighlight(Identifier species) {
+		return species != null && highlightedSpecies.contains(species.getPath());
+	}
+
+	public Set<String> getHighlightedSpecies() {
+		return Set.copyOf(highlightedSpecies);
+	}
+
 	public void setBackgroundOpacityPercent(int percent) {
 		backgroundOpacity = Math.round(clamp(percent, 0, 100) * 255.0F / 100.0F);
 	}
@@ -289,6 +302,31 @@ public final class SpawnDisplayConfig {
 
 	public void setHorizontalDistance(boolean value) {
 		horizontalDistance = value;
+	}
+
+	public void setHighlightedPokemon(String value) {
+		String input = value == null ? "" : value;
+		Set<String> names = new LinkedHashSet<>();
+		for (String name : input.split(",")) {
+			String normalized = normalizeSpeciesName(name);
+			if (!normalized.isEmpty()) {
+				names.add(normalized);
+			}
+		}
+		highlightedPokemon = input.trim();
+		highlightedSpecies = Set.copyOf(names);
+	}
+
+	public void toggleHighlightedPokemon(Identifier species) {
+		if (species == null) {
+			return;
+		}
+
+		Set<String> names = new LinkedHashSet<>(highlightedSpecies);
+		if (!names.remove(species.getPath())) {
+			names.add(species.getPath());
+		}
+		setHighlightedPokemon(String.join(", ", names));
 	}
 
 	public static String colorToHex(int color) {
@@ -424,6 +462,7 @@ public final class SpawnDisplayConfig {
 				config.disableSpriteAnimations
 		);
 		config.horizontalDistance = readBoolean(json, "horizontalDistance", config.horizontalDistance);
+		config.setHighlightedPokemon(readString(json, "highlightedPokemon", config.highlightedPokemon));
 		config.sanitize();
 		return config;
 	}
@@ -452,6 +491,7 @@ public final class SpawnDisplayConfig {
 		json.addProperty("showCommons", showCommons);
 		json.addProperty("disableSpriteAnimations", disableSpriteAnimations);
 		json.addProperty("horizontalDistance", horizontalDistance);
+		json.addProperty("highlightedPokemon", highlightedPokemon);
 		return json;
 	}
 
@@ -478,6 +518,7 @@ public final class SpawnDisplayConfig {
 		tileSize = clamp(tileSize, MIN_TILE_SIZE, MAX_TILE_SIZE);
 		spacing = clamp(spacing, MIN_SPACING, MAX_SPACING);
 		updateIntervalTicks = clamp(updateIntervalTicks, MIN_UPDATE_INTERVAL_TICKS, MAX_UPDATE_INTERVAL_TICKS);
+		setHighlightedPokemon(highlightedPokemon);
 	}
 
 	private static int readInt(JsonObject json, String key, int fallback) {
@@ -517,6 +558,31 @@ public final class SpawnDisplayConfig {
 		} catch (RuntimeException ignored) {
 			return fallback;
 		}
+	}
+
+	private static String readString(JsonObject json, String key, String fallback) {
+		JsonElement value = json.get(key);
+		if (value == null || value.isJsonNull() || !value.isJsonPrimitive()) {
+			return fallback;
+		}
+		try {
+			return value.getAsString();
+		} catch (RuntimeException ignored) {
+			return fallback;
+		}
+	}
+
+	private static String normalizeSpeciesName(String value) {
+		String normalized = value.trim().toLowerCase(Locale.ROOT);
+		int namespaceSeparator = normalized.lastIndexOf(':');
+		if (namespaceSeparator >= 0) {
+			normalized = normalized.substring(namespaceSeparator + 1);
+		}
+		normalized = normalized.replace("♀", "_f").replace("♂", "_m");
+		normalized = normalized.replaceAll("[\\s-]+", "_");
+		normalized = normalized.replaceAll("[^a-z0-9_]", "");
+		normalized = normalized.replaceAll("_+", "_");
+		return normalized.replaceAll("^_|_$", "");
 	}
 
 	private static int parseColor(String value) {

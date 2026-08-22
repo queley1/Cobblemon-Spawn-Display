@@ -1,16 +1,28 @@
 package com.cobblemonspawndisplay;
 
+import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
+import com.cobblemon.mod.common.pokemon.Species;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
@@ -23,6 +35,14 @@ public final class SpawnDisplayConfigScreen extends Screen {
 	private static final int COLOR_PREVIEW_Y = 114;
 	private static final int COLOR_PREVIEW_HEIGHT = 20;
 	private static final int COLOR_SLIDER_Y = 140;
+	private static final int HIGHLIGHT_SEARCH_Y = 66;
+	private static final int HIGHLIGHT_SUMMARY_Y = 92;
+	private static final int HIGHLIGHT_NAMES_Y = 104;
+	private static final int HIGHLIGHT_NAME_HEIGHT = 10;
+	private static final int HIGHLIGHT_NAME_ROWS = 2;
+	private static final int HIGHLIGHT_LIST_Y = 130;
+	private static final int HIGHLIGHT_ROW_HEIGHT = 20;
+	private static final int MAX_SEARCH_LENGTH = 64;
 	private static final int SAVE_DELAY_TICKS = 10;
 
 	private final Screen parent;
@@ -34,8 +54,10 @@ public final class SpawnDisplayConfigScreen extends Screen {
 	private int saveCountdown = -1;
 
 	private ButtonWidget generalTab;
+	private ButtonWidget highlightsTab;
 	private ButtonWidget colorsTab;
 	private final List<ClickableWidget> generalWidgets = new ArrayList<>();
+	private final List<ClickableWidget> highlightWidgets = new ArrayList<>();
 	private final List<ClickableWidget> colorWidgets = new ArrayList<>();
 	private final List<ButtonWidget> colorTargetButtons = new ArrayList<>();
 	private SliderRow opacityRow;
@@ -46,6 +68,11 @@ public final class SpawnDisplayConfigScreen extends Screen {
 	private ButtonWidget showCommonsButton;
 	private ButtonWidget disableSpriteAnimationsButton;
 	private ButtonWidget distanceModeButton;
+	private TextFieldWidget pokemonSearchField;
+	private PokemonListWidget pokemonList;
+	private List<SpeciesOption> pokemonOptions = List.of();
+	private final List<HighlightedPokemonButton> highlightedPokemonButtons = new ArrayList<>();
+	private boolean highlightButtonsDirty;
 	private SliderRow hueRow;
 	private SliderRow saturationRow;
 	private SliderRow lightnessRow;
@@ -59,21 +86,33 @@ public final class SpawnDisplayConfigScreen extends Screen {
 	protected void init() {
 		SpawnDisplayConfig config = SpawnDisplayConfig.get();
 		generalWidgets.clear();
+		highlightWidgets.clear();
 		colorWidgets.clear();
 		colorTargetButtons.clear();
+		highlightedPokemonButtons.clear();
 		int contentWidth = Math.min(300, this.width - 24);
 		int contentX = (this.width - contentWidth) / 2;
 		int splitWidth = (contentWidth - 4) / 2;
+		int tabWidth = (contentWidth - CONTROL_GAP * 2) / 3;
 		int optionButtonWidth = (contentWidth - CONTROL_GAP * 2) * 3 / 10;
 
 		generalTab = addDrawableChild(ButtonWidget.builder(
 				Text.translatable("screen.cobblemon_spawn_display.general"),
 				button -> setPage(Page.GENERAL)
-		).dimensions(contentX, 40, splitWidth, CONTROL_HEIGHT).build());
+		).dimensions(contentX, 40, tabWidth, CONTROL_HEIGHT).build());
+		highlightsTab = addDrawableChild(ButtonWidget.builder(
+				Text.translatable("screen.cobblemon_spawn_display.highlights"),
+				button -> setPage(Page.HIGHLIGHTS)
+		).dimensions(contentX + tabWidth + CONTROL_GAP, 40, tabWidth, CONTROL_HEIGHT).build());
 		colorsTab = addDrawableChild(ButtonWidget.builder(
 				Text.translatable("screen.cobblemon_spawn_display.colors"),
 				button -> setPage(Page.COLORS)
-		).dimensions(contentX + splitWidth + 4, 40, splitWidth, CONTROL_HEIGHT).build());
+		).dimensions(
+				contentX + (tabWidth + CONTROL_GAP) * 2,
+				40,
+				contentWidth - tabWidth * 2 - CONTROL_GAP * 2,
+				CONTROL_HEIGHT
+		).build());
 
 		int rowY = 66;
 		opacityRow = addSliderRow(contentX, rowY, contentWidth, 0, 100, config.getBackgroundOpacityPercent(),
@@ -124,6 +163,36 @@ public final class SpawnDisplayConfigScreen extends Screen {
 		).build());
 		generalWidgets.add(distanceModeButton);
 
+		pokemonSearchField = addDrawableChild(new TextFieldWidget(
+				textRenderer,
+				contentX,
+				HIGHLIGHT_SEARCH_Y,
+				contentWidth,
+				CONTROL_HEIGHT,
+				Text.translatable("screen.cobblemon_spawn_display.highlight_search")
+		));
+		pokemonSearchField.setMaxLength(MAX_SEARCH_LENGTH);
+		pokemonSearchField.setPlaceholder(Text.translatable(
+				"screen.cobblemon_spawn_display.highlight_search_placeholder"
+		));
+		highlightWidgets.add(pokemonSearchField);
+
+		pokemonOptions = loadPokemonOptions();
+		int buttonY = this.height - 28;
+		int listHeight = Math.max(HIGHLIGHT_ROW_HEIGHT, buttonY - HIGHLIGHT_LIST_Y - 6);
+		pokemonList = addDrawableChild(new PokemonListWidget(
+				MinecraftClient.getInstance(),
+				contentWidth,
+				listHeight,
+				HIGHLIGHT_LIST_Y,
+				HIGHLIGHT_ROW_HEIGHT
+		));
+		pokemonList.setX(contentX);
+		pokemonList.setOptions(pokemonOptions);
+		highlightWidgets.add(pokemonList);
+		pokemonSearchField.setChangedListener(this::filterPokemonOptions);
+		rebuildHighlightedPokemonButtons();
+
 		addColorTargetButtons(contentX, rowY, contentWidth);
 		Hsl hsl = rgbToHsl(selectedColorTarget.getColor(config));
 		hueRow = addSliderRow(contentX, COLOR_SLIDER_Y, contentWidth, 0, 359, hsl.hue(),
@@ -138,7 +207,6 @@ public final class SpawnDisplayConfigScreen extends Screen {
 				"screen.cobblemon_spawn_display.lightness", "%", value -> applySelectedColor(),
 				() -> defaultSelectedHsl().lightness(), colorWidgets);
 
-		int buttonY = this.height - 28;
 		addDrawableChild(ButtonWidget.builder(Text.translatable("screen.cobblemon_spawn_display.reset"), button -> resetAll())
 				.dimensions(contentX, buttonY, splitWidth, CONTROL_HEIGHT)
 				.build());
@@ -157,6 +225,9 @@ public final class SpawnDisplayConfigScreen extends Screen {
 	@Override
 	public void tick() {
 		super.tick();
+		if (highlightButtonsDirty) {
+			rebuildHighlightedPokemonButtons();
+		}
 		if (dirty && saveCountdown > 0 && --saveCountdown == 0) {
 			saveNow();
 		}
@@ -172,6 +243,8 @@ public final class SpawnDisplayConfigScreen extends Screen {
 		if (page == Page.COLORS) {
 			renderColorTargetButtons(context);
 			renderColorPreview(context);
+		} else if (page == Page.HIGHLIGHTS) {
+			renderHighlightSettings(context);
 		}
 	}
 
@@ -249,16 +322,23 @@ public final class SpawnDisplayConfigScreen extends Screen {
 
 	private void setPage(Page newPage) {
 		page = newPage;
+		if (newPage != Page.HIGHLIGHTS && pokemonSearchField != null) {
+			pokemonSearchField.setFocused(false);
+			pokemonList.setFocused(false);
+		}
 		updatePageVisibility();
 	}
 
 	private void updatePageVisibility() {
 		boolean showGeneral = page == Page.GENERAL;
+		boolean showHighlights = page == Page.HIGHLIGHTS;
 		generalWidgets.forEach(widget -> setVisible(widget, showGeneral));
-		colorWidgets.forEach(widget -> setVisible(widget, !showGeneral));
+		highlightWidgets.forEach(widget -> setVisible(widget, showHighlights));
+		colorWidgets.forEach(widget -> setVisible(widget, page == Page.COLORS));
 		updateColorTargetButtonStates();
 		generalTab.active = !showGeneral;
-		colorsTab.active = showGeneral;
+		highlightsTab.active = !showHighlights;
+		colorsTab.active = page != Page.COLORS;
 	}
 
 	private static void setVisible(ClickableWidget widget, boolean visible) {
@@ -369,6 +449,156 @@ public final class SpawnDisplayConfigScreen extends Screen {
 		context.drawText(textRenderer, previewText, textX, COLOR_PREVIEW_Y + 6, foreground, false);
 	}
 
+	private void renderHighlightSettings(DrawContext context) {
+		int contentWidth = Math.min(300, this.width - 24);
+		int contentX = (this.width - contentWidth) / 2;
+		Set<String> highlighted = SpawnDisplayConfig.get().getHighlightedSpecies();
+		context.drawTextWithShadow(
+				textRenderer,
+				Text.translatable("screen.cobblemon_spawn_display.highlight_summary", highlighted.size()),
+				contentX,
+				HIGHLIGHT_SUMMARY_Y,
+				0xFFFFFFFF
+		);
+		if (highlighted.isEmpty()) {
+			context.drawText(
+					textRenderer,
+					Text.translatable("screen.cobblemon_spawn_display.highlight_none"),
+					contentX,
+					HIGHLIGHT_NAMES_Y,
+					0xFFFFC07A,
+					true
+			);
+		} else {
+			for (int index = 0; index + 1 < highlightedPokemonButtons.size(); index++) {
+				HighlightedPokemonButton current = highlightedPokemonButtons.get(index);
+				HighlightedPokemonButton next = highlightedPokemonButtons.get(index + 1);
+				if (current.getY() == next.getY()) {
+					context.drawText(
+							textRenderer,
+							", ",
+							current.getRight(),
+							current.getY(),
+							0xFFFFC07A,
+							true
+					);
+				}
+			}
+		}
+
+		if (pokemonList.isEmpty()) {
+			Text emptyText = pokemonOptions.isEmpty()
+					? Text.translatable("screen.cobblemon_spawn_display.highlight_unavailable")
+					: Text.translatable("screen.cobblemon_spawn_display.highlight_no_matches");
+			context.drawCenteredTextWithShadow(
+					textRenderer,
+					emptyText,
+					width / 2,
+					pokemonList.getY() + 8,
+					0xFFFFC07A
+			);
+		}
+	}
+
+	private List<SpeciesOption> loadPokemonOptions() {
+		try {
+			return PokemonSpecies.getImplemented().stream()
+					.filter(species -> species.getResourceIdentifier() != null)
+					.map(SpeciesOption::fromSpecies)
+					.sorted(Comparator
+							.comparingInt(SpeciesOption::dexSortNumber)
+							.thenComparing(option -> option.identifier().toString()))
+					.toList();
+		} catch (RuntimeException exception) {
+			CobblemonSpawnDisplayClient.LOGGER.warn("Could not populate the highlight Pokemon list", exception);
+			return List.of();
+		}
+	}
+
+	private void filterPokemonOptions(String search) {
+		String query = search.trim().toLowerCase(Locale.ROOT);
+		pokemonList.setOptions(pokemonOptions.stream()
+				.filter(option -> option.matches(query))
+				.toList());
+	}
+
+	private List<ActiveHighlight> activeHighlights() {
+		Set<String> highlighted = SpawnDisplayConfig.get().getHighlightedSpecies();
+		List<ActiveHighlight> active = new ArrayList<>();
+		Set<String> knownSpecies = new HashSet<>();
+		for (SpeciesOption option : pokemonOptions) {
+			String speciesPath = option.identifier().getPath();
+			if (knownSpecies.add(speciesPath) && highlighted.contains(speciesPath)) {
+				active.add(new ActiveHighlight(option.identifier(), option.displayName()));
+			}
+		}
+		highlighted.stream()
+				.filter(species -> !knownSpecies.contains(species))
+				.sorted()
+				.map(species -> new ActiveHighlight(
+						Identifier.of("cobblemon", species),
+						Text.literal(species.replace('_', ' '))
+				))
+				.forEach(active::add);
+		return active;
+	}
+
+	private void rebuildHighlightedPokemonButtons() {
+		for (HighlightedPokemonButton button : List.copyOf(highlightedPokemonButtons)) {
+			remove(button);
+			highlightWidgets.remove(button);
+		}
+		highlightedPokemonButtons.clear();
+
+		int contentWidth = Math.min(300, this.width - 24);
+		int contentX = (this.width - contentWidth) / 2;
+		int right = contentX + contentWidth;
+		int commaWidth = textRenderer.getWidth(", ");
+		int x = contentX;
+		int row = 0;
+		for (ActiveHighlight highlight : activeHighlights()) {
+			String fullName = highlight.displayName().getString();
+			int buttonWidth = textRenderer.getWidth(fullName);
+			int gap = x == contentX ? 0 : commaWidth;
+			if (x + gap + buttonWidth > right && x != contentX) {
+				row++;
+				if (row >= HIGHLIGHT_NAME_ROWS) {
+					break;
+				}
+				x = contentX;
+				gap = 0;
+			}
+
+			int availableWidth = right - x - gap;
+			String visibleName = fullName;
+			if (buttonWidth > availableWidth) {
+				String ellipsis = "…";
+				visibleName = textRenderer.trimToWidth(
+						fullName,
+						Math.max(0, availableWidth - textRenderer.getWidth(ellipsis))
+				) + ellipsis;
+				buttonWidth = textRenderer.getWidth(visibleName);
+			}
+
+			x += gap;
+			HighlightedPokemonButton button = new HighlightedPokemonButton(
+					x,
+					HIGHLIGHT_NAMES_Y + row * HIGHLIGHT_NAME_HEIGHT,
+					buttonWidth,
+					highlight.identifier(),
+					Text.literal(visibleName),
+					highlight.displayName()
+			);
+			button.visible = page == Page.HIGHLIGHTS;
+			button.active = button.visible;
+			addDrawableChild(button);
+			highlightWidgets.add(button);
+			highlightedPokemonButtons.add(button);
+			x += buttonWidth;
+		}
+		highlightButtonsDirty = false;
+	}
+
 	private static int contrastingTextColor(int color) {
 		double luminance = 0.2126 * linearColorChannel(color >> 16 & 0xFF)
 				+ 0.7152 * linearColorChannel(color >> 8 & 0xFF)
@@ -395,6 +625,8 @@ public final class SpawnDisplayConfigScreen extends Screen {
 		config.setShowCommons(SpawnDisplayConfig.defaultShowCommons());
 		config.setDisableSpriteAnimations(SpawnDisplayConfig.defaultDisableSpriteAnimations());
 		config.setHorizontalDistance(SpawnDisplayConfig.defaultHorizontalDistance());
+		config.setHighlightedPokemon("");
+		highlightButtonsDirty = true;
 		for (Rarity rarity : Rarity.values()) {
 			config.setRarityColor(rarity, SpawnDisplayConfig.defaultRarityColor(rarity));
 		}
@@ -582,6 +814,7 @@ public final class SpawnDisplayConfigScreen extends Screen {
 
 	private enum Page {
 		GENERAL,
+		HIGHLIGHTS,
 		COLORS
 	}
 
@@ -701,6 +934,214 @@ public final class SpawnDisplayConfigScreen extends Screen {
 	}
 
 	private record Hsl(int hue, int saturation, int lightness) {
+	}
+
+	private record SpeciesOption(
+			Identifier identifier,
+			int dexNumber,
+			Text displayName,
+			String searchText
+	) {
+		private static SpeciesOption fromSpecies(Species species) {
+			Identifier identifier = species.getResourceIdentifier();
+			int dexNumber = species.getNationalPokedexNumber();
+			Text displayName = species.getTranslatedName();
+			String searchText = (displayName.getString()
+					+ " " + identifier.getPath().replace('_', ' ')
+					+ " " + dexNumber
+					+ " #" + dexNumber).toLowerCase(Locale.ROOT);
+			return new SpeciesOption(identifier, dexNumber, displayName, searchText);
+		}
+
+		private int dexSortNumber() {
+			return dexNumber > 0 ? dexNumber : Integer.MAX_VALUE;
+		}
+
+		private String dexLabel() {
+			return dexNumber > 0 ? "#" + dexNumber : "#?";
+		}
+
+		private boolean matches(String query) {
+			return query.isEmpty() || searchText.contains(query);
+		}
+	}
+
+	private record ActiveHighlight(Identifier identifier, Text displayName) {
+	}
+
+	private final class HighlightedPokemonButton extends ClickableWidget {
+		private final Identifier identifier;
+		private final Text fullDisplayName;
+
+		private HighlightedPokemonButton(
+				int x,
+				int y,
+				int width,
+				Identifier identifier,
+				Text visibleName,
+				Text fullDisplayName
+		) {
+			super(x, y, width, HIGHLIGHT_NAME_HEIGHT, visibleName);
+			this.identifier = identifier;
+			this.fullDisplayName = fullDisplayName;
+			setTooltip(Tooltip.of(Text.translatable(
+					"screen.cobblemon_spawn_display.highlight_remove_named",
+					fullDisplayName
+			)));
+		}
+
+		@Override
+		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+			boolean emphasized = isHovered() || isFocused();
+			Text label = getMessage().copy().styled(style -> style.withUnderline(emphasized));
+			context.drawText(
+					textRenderer,
+					label,
+					getX(),
+					getY(),
+					emphasized ? 0xFFFFFF55 : 0xFFFFC07A,
+					true
+			);
+		}
+
+		@Override
+		public void onClick(double mouseX, double mouseY) {
+			active = false;
+			visible = false;
+			SpawnDisplayConfig.get().toggleHighlightedPokemon(identifier);
+			highlightButtonsDirty = true;
+			settingsChanged();
+		}
+
+		@Override
+		protected MutableText getNarrationMessage() {
+			return Text.translatable(
+					"screen.cobblemon_spawn_display.highlight_remove_named",
+					fullDisplayName
+			);
+		}
+
+		@Override
+		protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+			appendDefaultNarrations(builder);
+		}
+	}
+
+	private final class PokemonListWidget extends AlwaysSelectedEntryListWidget<PokemonEntry> {
+		private PokemonListWidget(MinecraftClient client, int width, int height, int y, int itemHeight) {
+			super(client, width, height, y, itemHeight);
+			centerListVertically = false;
+		}
+
+		private void setOptions(List<SpeciesOption> options) {
+			replaceEntries(options.stream().map(PokemonEntry::new).toList());
+			setScrollAmount(0.0);
+		}
+
+		private boolean isEmpty() {
+			return children().isEmpty();
+		}
+
+		@Override
+		public int getRowWidth() {
+			return getWidth() - 12;
+		}
+
+		@Override
+		protected int getScrollbarX() {
+			return getRight() - 6;
+		}
+	}
+
+	private final class PokemonEntry extends AlwaysSelectedEntryListWidget.Entry<PokemonEntry> {
+		private final SpeciesOption option;
+
+		private PokemonEntry(SpeciesOption option) {
+			this.option = option;
+		}
+
+		@Override
+		public void render(
+				DrawContext context,
+				int index,
+				int y,
+				int x,
+				int entryWidth,
+				int entryHeight,
+				int mouseX,
+				int mouseY,
+				boolean hovered,
+				float tickDelta
+		) {
+			boolean highlighted = SpawnDisplayConfig.get().shouldHighlight(option.identifier());
+			if (highlighted) {
+				context.fill(x - 2, y, x + entryWidth + 2, y + entryHeight - 1, 0xA04A2500);
+			} else if (hovered) {
+				context.fill(x - 2, y, x + entryWidth + 2, y + entryHeight - 1, 0x60000000);
+			}
+			context.fill(x, y + entryHeight - 1, x + entryWidth, y + entryHeight, 0x30FFFFFF);
+
+			String action = Text.translatable(highlighted
+					? "screen.cobblemon_spawn_display.highlight_remove"
+					: "screen.cobblemon_spawn_display.highlight_add").getString();
+			int actionX = x + entryWidth - textRenderer.getWidth(action) - 4;
+			int nameX = x + textRenderer.getWidth("#0000") + 10;
+			int availableNameWidth = Math.max(0, actionX - nameX - 6);
+			String visibleName = textRenderer.trimToWidth(option.displayName().getString(), availableNameWidth);
+
+			context.drawText(
+					textRenderer,
+					option.dexLabel(),
+					x + 4,
+					y + 6,
+					highlighted ? 0xFFFFC07A : 0xFFB8B8B8,
+					false
+			);
+			context.drawText(textRenderer, visibleName, nameX, y + 6, 0xFFFFFFFF, false);
+			context.drawText(
+					textRenderer,
+					action,
+					actionX,
+					y + 6,
+					highlighted ? 0xFFFFC07A : 0xFFFFFFFF,
+					false
+			);
+		}
+
+		@Override
+		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+			if (button != GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+				return false;
+			}
+			toggleHighlight();
+			return true;
+		}
+
+		@Override
+		public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+			if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_SPACE) {
+				toggleHighlight();
+				return true;
+			}
+			return false;
+		}
+
+		@Override
+		public Text getNarration() {
+			boolean highlighted = SpawnDisplayConfig.get().shouldHighlight(option.identifier());
+			return Text.literal(option.dexLabel() + " ")
+					.append(option.displayName().copy())
+					.append(". ")
+					.append(Text.translatable(highlighted
+							? "screen.cobblemon_spawn_display.highlight_remove"
+							: "screen.cobblemon_spawn_display.highlight_add"));
+		}
+
+		private void toggleHighlight() {
+			SpawnDisplayConfig.get().toggleHighlightedPokemon(option.identifier());
+			highlightButtonsDirty = true;
+			settingsChanged();
+		}
 	}
 
 	private record SliderRow(IntSlider slider, ButtonWidget resetButton, IntSupplier resetValue) {

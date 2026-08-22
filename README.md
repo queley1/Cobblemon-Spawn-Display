@@ -36,10 +36,20 @@ has no background plate. Tile interiors are translucent and darkened for avatar
 contrast. Ultra rare remains pink by default. By default, 30-pixel tiles fill
 from left to right and wrap after eight entries.
 
-While a game screen is open and the mouse cursor is visible, click a Pokemon
-tile to pin it ahead of the normal sort order. Pinned tiles use an animated
-orange border, and the most recently pinned tile appears first. Click a pinned
-tile again to unpin it. Pins last until that Pokemon is no longer loaded.
+Whenever the mouse cursor is available, click a Pokemon tile to pin it ahead of
+the normal sort order. The active screen and its controls always receive clicks
+first; tiles respond only to clicks they leave unhandled. Pinned tiles use an
+animated orange border, and the most recently pinned tile appears first. Click
+a pinned tile again to unpin it. Pins last until that Pokemon is no longer
+loaded.
+
+Pokemon species can also be highlighted persistently from the Highlights page
+in settings. The page lists every implemented species in National Dex order;
+search by name or Pokédex number, then click a row to add or remove that species
+from Highlighted Spawns. Active names shown beneath the Highlighted Spawns
+heading can also be clicked directly to remove them. Matching spawns sort ahead
+of ordinary entries, use the same animated orange pinned border, and remain
+visible when ordinary commons are hidden.
 
 Open **Configure** from Mod Menu to access **Spawn Display Settings**. Each
 class and split-color role has its own selector button on the Colors page, so
@@ -50,8 +60,9 @@ Controls. Settings are stored client-side in
 HSL colors for each rarity, Legendary, Mythical, Fossil, both Ultra Beast color
 roles, both Paradox color roles, Shiny, Alpha, and Tera; row length; tile size;
 spacing; the entity refresh interval (in ticks); and whether ordinary common
-Pokemon are shown. Commons with a Tera marker or special skin remain visible,
-like Shiny and Alpha commons. Animations can also be disabled; this freezes both avatars
+Pokemon are shown. Commons that match the highlight list, have a Tera marker,
+or have a special skin remain visible, as do Shiny and Alpha commons. Animations
+can also be disabled; this freezes both avatars
 and animated borders while preserving the multi-color border treatment. They
 remain enabled by default. Distance can use absolute 3D distance or horizontal
 distance that ignores height; absolute distance remains the default. The chosen

@@ -95,6 +95,7 @@ public final class SpawnHud {
 				boolean tera = SpecialAppearance.isTera(pokemon);
 				boolean specialSkin = SpecialAppearance.hasSpecialSkin(pokemon);
 				boolean fossil = SpecialClassification.isFossil(pokemon);
+				boolean highlighted = config.shouldHighlight(species);
 				SpecialClassification specialClassification = rarity == null
 						? SpecialClassification.fromPokemon(pokemon)
 						: null;
@@ -110,6 +111,7 @@ public final class SpawnHud {
 						&& !alpha
 						&& !tera
 						&& !specialSkin
+						&& !highlighted
 						&& !config.shouldShowCommons()) {
 					continue;
 				}
@@ -128,6 +130,7 @@ public final class SpawnHud {
 						pokemon.asRenderablePokemon(),
 						avatarState,
 						species,
+						highlighted,
 						rarity,
 						specialClassification,
 						shiny,
@@ -152,10 +155,13 @@ public final class SpawnHud {
 	}
 
 	private static Comparator<Entry> entryComparator() {
-		return Comparator.comparingLong(
-				(Entry entry) -> PINNED_ENTRIES.getOrDefault(entry.entity().getUuid(), Long.MIN_VALUE)
+		return Comparator.comparing(
+				(Entry entry) -> isPinned(entry),
+				Comparator.reverseOrder()
 		)
-				.reversed()
+				.thenComparing(Comparator.comparingLong(
+						(Entry entry) -> PINNED_ENTRIES.getOrDefault(entry.entity().getUuid(), Long.MIN_VALUE)
+				).reversed())
 				.thenComparing(Comparator.comparing(
 						(Entry entry) -> entry.hasClassification(SpecialClassification.MYTHICAL),
 						Comparator.reverseOrder()
@@ -206,7 +212,12 @@ public final class SpawnHud {
 			return false;
 		}
 
-		UUID entityId = entries.get(entryIndex).entity().getUuid();
+		Entry entry = entries.get(entryIndex);
+		if (entry.highlighted()) {
+			return true;
+		}
+
+		UUID entityId = entry.entity().getUuid();
 		if (PINNED_ENTRIES.remove(entityId) == null) {
 			PINNED_ENTRIES.put(entityId, nextPinnedOrder++);
 		}
@@ -259,7 +270,7 @@ public final class SpawnHud {
 				y + tileSize - 1,
 				config.getBackgroundColor(tileStyle.backgroundColor())
 		);
-		if (PINNED_ENTRIES.containsKey(entry.entity().getUuid())) {
+		if (isPinned(entry)) {
 			float borderAnimationProgress = config.shouldDisableSpriteAnimations()
 					? 0.0F
 					: ((client.world.getTime() % BORDER_ANIMATION_PERIOD_TICKS) + tickDelta)
@@ -657,11 +668,16 @@ public final class SpawnHud {
 		};
 	}
 
+	private static boolean isPinned(Entry entry) {
+		return entry.highlighted() || PINNED_ENTRIES.containsKey(entry.entity().getUuid());
+	}
+
 	private record Entry(
 			PokemonEntity entity,
 			RenderablePokemon renderablePokemon,
 			FloatingState avatarState,
 			Identifier species,
+			boolean highlighted,
 			Rarity rarity,
 			SpecialClassification specialClassification,
 			boolean shiny,
