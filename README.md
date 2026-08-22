@@ -1,7 +1,11 @@
 # Cobblemon Spawn Display
 
-A client-side Fabric mod for Minecraft 1.21.1 and the Cobblemon 1.8.0 build in
-the Cobblemon Realms pack. It adds a compact HUD grid in the top-left corner
+A client-side Fabric mod for Minecraft 1.21.1, built specifically for Mythical
+Launcher's **Cobblemon Realms** pack. It is built and tested against the
+pack's bundled Cobblemon development snapshot,
+`1.8.0+1.21.1-main-c7488d5`; this is **not** an official public Cobblemon 1.8.0
+release, because no such release exists. Public Cobblemon installations need a
+separately compatible build. It adds a compact HUD grid in the top-left corner
 containing every Pokemon entity currently loaded by the client.
 
 Entries are sorted by Mythical, Legendary, Ultra Beast, Paradox, Alpha, Shiny,
@@ -32,6 +36,22 @@ has no background plate. Tile interiors are translucent and darkened for avatar
 contrast. Ultra rare remains pink by default. By default, 30-pixel tiles fill
 from left to right and wrap after eight entries.
 
+Whenever the mouse cursor is available, hover a Pokemon tile to see its name,
+or click it to pin it ahead of the normal sort order. Tooltips appear
+immediately. The active screen and its controls always receive clicks first;
+tiles respond only to clicks they leave unhandled. Pinned tiles use an animated
+orange border, and the most recently pinned tile appears first. Click a pinned
+tile again to unpin it. Pins last until that Pokemon is no longer loaded. A
+compact settings button follows the final tile in the grid and opens Spawn
+Display Settings.
+
+Pokemon species can also be highlighted persistently from the Highlights page
+in settings. The page lists every implemented species in National Dex order;
+search by name or Pokédex number, then click a row to add that species. A
+side-by-side scrollable list shows the selected Pokemon and lets each one be
+removed. Matching spawns sort ahead of ordinary entries, use the same animated
+orange pinned border, and remain visible when ordinary commons are hidden.
+
 Open **Configure** from Mod Menu to access **Spawn Display Settings**. Each
 class and split-color role has its own selector button on the Colors page, so
 none are hidden behind a cycling control. Each selector's background previews
@@ -41,10 +61,13 @@ Controls. Settings are stored client-side in
 HSL colors for each rarity, Legendary, Mythical, Fossil, both Ultra Beast color
 roles, both Paradox color roles, Shiny, Alpha, and Tera; row length; tile size;
 spacing; the entity refresh interval (in ticks); and whether ordinary common
-Pokemon are shown. Commons with a Tera marker or special skin remain visible,
-like Shiny and Alpha commons. Animations can also be disabled; this freezes both avatars
+Pokemon are shown. Commons that match the highlight list, have a Tera marker,
+or have a special skin remain visible, as do Shiny and Alpha commons. Animations
+can also be disabled; this freezes both avatars
 and animated borders while preserving the multi-color border treatment. They
-remain enabled by default. Shiny and Alpha commons are always shown.
+remain enabled by default. Distance can use absolute 3D distance or horizontal
+distance that ignores height; horizontal distance is the default. The chosen
+mode also controls nearest-first sorting. Shiny and Alpha commons are always shown.
 
 Tera is identified from the server's synced `mythical_wildtera` overworld
 aspect, Mega Showdown's `msd:tera_<type>` battle aspect, and its brief
@@ -82,13 +105,14 @@ snapshot from the published spawn-bucket sheet.
 
 ## Build
 
-The project requires Java 21 plus local copies of the Cobblemon 1.8.0 Fabric
-JAR and Mod Menu 11.0.4 JAR. Point Gradle at the installed JARs, then build
-from the repository root on Windows:
+The project requires Java 21 plus the exact Cobblemon Fabric development
+snapshot bundled by Mythical Launcher's Cobblemon Realms pack and Mod Menu
+11.0.4. Point Gradle at local copies of those JARs, then build from the
+repository root on Windows:
 
 ```powershell
 $env:JAVA_HOME = "C:\path\to\jdk-21"
-$env:COBBLEMON_JAR = "C:\path\to\Cobblemon-fabric-1.8.0+1.21.1.jar"
+$env:COBBLEMON_JAR = "C:\path\to\Cobblemon-fabric-1.8.0+1.21.1-main-c7488d5.jar"
 $env:MODMENU_JAR = "C:\path\to\modmenu-11.0.4.jar"
 .\gradlew.bat build
 ```
@@ -98,5 +122,6 @@ Alternatively, copy the dependencies to `libs/Cobblemon.jar` and
 
 The finished JAR is written to `build/libs/`.
 
-For this Mythical Launcher instance, place the JAR in the instance's
-`user-mods` directory so the launcher keeps it across pack updates.
+For the target Mythical Launcher Cobblemon Realms instance, place the JAR in
+the instance's `user-mods` directory so the launcher keeps it across pack
+updates.

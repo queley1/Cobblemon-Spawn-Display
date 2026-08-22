@@ -33,7 +33,11 @@ public final class SpawnHud {
 	private static final int MARGIN = 4;
 	private static final int BASE_TILE_SIZE = 30;
 	private static final int BASE_FOOTER_Y_OFFSET = 20;
+	private static final int SETTINGS_BACKGROUND_COLOR = 0xAAAAAA;
+	private static final int SETTINGS_BORDER_COLOR = 0xFFAAAAAA;
+	private static final int SETTINGS_HOVER_BORDER_COLOR = 0xFFFFFFFF;
 	private static final int BORDER_ANIMATION_PERIOD_TICKS = 80;
+	private static final int[] PINNED_BORDER_COLORS = {0xFFFF6A00, 0xFFFFB347, 0xFFFF8C00};
 	private static final char SPECIAL_SKIN_BADGE = '\uE000';
 	private static final int SPECIAL_SKIN_BADGE_SIZE = 9;
 	private static final Identifier SPECIAL_SKIN_BADGE_TEXTURE = Identifier.of(
@@ -42,8 +46,10 @@ public final class SpawnHud {
 	);
 	private static final String[] DIRECTION_ARROWS = {"↑", "↗", "→", "↘", "↓", "↙", "←", "↖"};
 	private static final Map<UUID, FloatingState> AVATAR_STATES = new HashMap<>();
+	private static final Map<UUID, Long> PINNED_ENTRIES = new HashMap<>();
 	private static final Set<Identifier> REPORTED_AVATAR_FAILURES = new HashSet<>();
 	private static List<Entry> entries = List.of();
+	private static long nextPinnedOrder;
 	private static int refreshCountdown;
 
 	private SpawnHud() {
@@ -61,6 +67,8 @@ public final class SpawnHud {
 		if (client.world == null || client.player == null) {
 			entries = List.of();
 			AVATAR_STATES.clear();
+			PINNED_ENTRIES.clear();
+			nextPinnedOrder = 0;
 			refreshCountdown = 0;
 			return;
 		}
@@ -90,6 +98,7 @@ public final class SpawnHud {
 				boolean tera = SpecialAppearance.isTera(pokemon);
 				boolean specialSkin = SpecialAppearance.hasSpecialSkin(pokemon);
 				boolean fossil = SpecialClassification.isFossil(pokemon);
+				boolean highlighted = config.shouldHighlight(species);
 				SpecialClassification specialClassification = rarity == null
 						? SpecialClassification.fromPokemon(pokemon)
 						: null;
@@ -105,6 +114,7 @@ public final class SpawnHud {
 						&& !alpha
 						&& !tera
 						&& !specialSkin
+						&& !highlighted
 						&& !config.shouldShowCommons()) {
 					continue;
 				}
@@ -112,13 +122,18 @@ public final class SpawnHud {
 				UUID entityId = pokemonEntity.getUuid();
 				visiblePokemon.add(entityId);
 				FloatingState avatarState = AVATAR_STATES.computeIfAbsent(entityId, ignored -> new FloatingState());
-				double distanceSquared = client.player.squaredDistanceTo(pokemonEntity);
+				double distanceSquared = distanceSquared(
+						client.player,
+						pokemonEntity,
+						config.shouldUseHorizontalDistance()
+				);
 
 				discovered.add(new Entry(
 						pokemonEntity,
 						pokemon.asRenderablePokemon(),
 						avatarState,
 						species,
+						highlighted,
 						rarity,
 						specialClassification,
 						shiny,
@@ -137,8 +152,20 @@ public final class SpawnHud {
 		}
 
 		AVATAR_STATES.keySet().retainAll(visiblePokemon);
-		discovered.sort(
-				Comparator.comparing(
+		PINNED_ENTRIES.keySet().retainAll(visiblePokemon);
+		discovered.sort(entryComparator());
+		entries = List.copyOf(discovered);
+	}
+
+	private static Comparator<Entry> entryComparator() {
+		return Comparator.comparing(
+				(Entry entry) -> isPinned(entry),
+				Comparator.reverseOrder()
+		)
+				.thenComparing(Comparator.comparingLong(
+						(Entry entry) -> PINNED_ENTRIES.getOrDefault(entry.entity().getUuid(), Long.MIN_VALUE)
+				).reversed())
+				.thenComparing(Comparator.comparing(
 						(Entry entry) -> entry.hasClassification(SpecialClassification.MYTHICAL),
 						Comparator.reverseOrder()
 				)
@@ -159,30 +186,175 @@ public final class SpawnHud {
 						.thenComparing(Entry::isFossil, Comparator.reverseOrder())
 						.thenComparing(Entry::tera, Comparator.reverseOrder())
 						.thenComparing(Comparator.comparingInt(Entry::rarityRank).reversed())
-						.thenComparingDouble(Entry::distanceSquared)
-		);
-		entries = List.copyOf(discovered);
+						.thenComparingDouble(Entry::distanceSquared));
+	}
+
+	public static boolean handleClick(double mouseX, double mouseY) {
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (client.world == null || client.player == null || client.options.hudHidden) {
+			return false;
+		}
+
+		SpawnDisplayConfig config = SpawnDisplayConfig.get();
+		GridSlot settingsSlot = gridSlot(entries.size(), config);
+		int settingsButtonSize = settingsButtonSize(config.getTileSize());
+		if (contains(settingsSlot, settingsButtonSize, mouseX, mouseY)) {
+			if (!(client.currentScreen instanceof SpawnDisplayConfigScreen)) {
+				client.setScreen(new SpawnDisplayConfigScreen(client.currentScreen));
+			}
+			return true;
+		}
+
+		Entry entry = entryAt(mouseX, mouseY, config);
+		if (entry == null) {
+			return false;
+		}
+
+		if (entry.highlighted()) {
+			return true;
+		}
+
+		UUID entityId = entry.entity().getUuid();
+		if (PINNED_ENTRIES.remove(entityId) == null) {
+			PINNED_ENTRIES.put(entityId, nextPinnedOrder++);
+		}
+
+		List<Entry> reordered = new ArrayList<>(entries);
+		reordered.sort(entryComparator());
+		entries = List.copyOf(reordered);
+		return true;
 	}
 
 	public static void render(DrawContext context, RenderTickCounter tickCounter) {
 		MinecraftClient client = MinecraftClient.getInstance();
-		if (client.world == null || client.player == null || client.options.hudHidden || entries.isEmpty()) {
+		if (client.world == null || client.player == null || client.options.hudHidden) {
 			return;
 		}
 
 		float tickDelta = tickCounter.getTickDelta(false);
 		SpawnDisplayConfig config = SpawnDisplayConfig.get();
-		int tileSize = config.getTileSize();
-		int tileGap = config.getSpacing();
-		int tilesPerRow = config.getRowLength();
-
 		for (int index = 0; index < entries.size(); index++) {
-			int column = index % tilesPerRow;
-			int row = index / tilesPerRow;
-			int x = MARGIN + column * (tileSize + tileGap);
-			int y = MARGIN + row * (tileSize + tileGap);
-			renderTile(context, client, entries.get(index), tickDelta, config, x, y);
+			GridSlot slot = gridSlot(index, config);
+			renderTile(context, client, entries.get(index), tickDelta, config, slot.x(), slot.y());
 		}
+
+		GridSlot settingsSlot = gridSlot(entries.size(), config);
+		renderSettingsButton(context, client, config, settingsSlot);
+	}
+
+	public static void renderTooltip(DrawContext context, int mouseX, int mouseY) {
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (client.world == null || client.player == null || client.options.hudHidden) {
+			return;
+		}
+
+		SpawnDisplayConfig config = SpawnDisplayConfig.get();
+		Entry entry = entryAt(mouseX, mouseY, config);
+		if (entry != null) {
+			context.drawTooltip(client.textRenderer, entry.entity().getName(), mouseX, mouseY);
+			return;
+		}
+
+		GridSlot settingsSlot = gridSlot(entries.size(), config);
+		if (contains(settingsSlot, settingsButtonSize(config.getTileSize()), mouseX, mouseY)) {
+			context.drawTooltip(
+					client.textRenderer,
+					Text.translatable("key.cobblemon_spawn_display.open_settings"),
+					mouseX,
+					mouseY
+			);
+		}
+	}
+
+	private static void renderSettingsButton(
+			DrawContext context,
+			MinecraftClient client,
+			SpawnDisplayConfig config,
+			GridSlot slot
+	) {
+		int buttonSize = settingsButtonSize(config.getTileSize());
+		boolean hovered = false;
+		if (client.currentScreen != null) {
+			double mouseX = client.mouse.getX() * client.getWindow().getScaledWidth()
+					/ client.getWindow().getWidth();
+			double mouseY = client.mouse.getY() * client.getWindow().getScaledHeight()
+					/ client.getWindow().getHeight();
+			hovered = contains(slot, buttonSize, mouseX, mouseY);
+		}
+
+		context.fill(
+				slot.x() + 1,
+				slot.y() + 1,
+				slot.x() + buttonSize - 1,
+				slot.y() + buttonSize - 1,
+				config.getBackgroundColor(SETTINGS_BACKGROUND_COLOR)
+		);
+		renderBorder(
+				context,
+				slot.x(),
+				slot.y(),
+				buttonSize,
+				hovered ? SETTINGS_HOVER_BORDER_COLOR : SETTINGS_BORDER_COLOR
+		);
+		renderSettingsIcon(context, slot.x(), slot.y(), buttonSize, hovered);
+	}
+
+	private static void renderSettingsIcon(
+			DrawContext context,
+			int x,
+			int y,
+			int buttonSize,
+			boolean hovered
+	) {
+		int iconWidth = Math.max(6, Math.min(10, buttonSize - 4));
+		int iconX = x + (buttonSize - iconWidth) / 2;
+		int iconY = y + (buttonSize - 7) / 2;
+		int lineColor = hovered ? 0xFFFFFFFF : 0xFFD0D0D0;
+		int[] knobOffsets = {1, iconWidth - 3, Math.max(1, iconWidth / 2 - 1)};
+
+		for (int index = 0; index < knobOffsets.length; index++) {
+			int lineY = iconY + index * 3;
+			context.fill(iconX, lineY + 1, iconX + iconWidth, lineY + 2, lineColor);
+			int knobX = iconX + knobOffsets[index];
+			context.fill(knobX, lineY, knobX + 2, lineY + 3, 0xFFFFFFFF);
+		}
+	}
+
+	private static Entry entryAt(double mouseX, double mouseY, SpawnDisplayConfig config) {
+		if (mouseX < MARGIN || mouseY < MARGIN) {
+			return null;
+		}
+
+		int tileSize = config.getTileSize();
+		int tileStride = tileSize + config.getSpacing();
+		int column = (int) ((mouseX - MARGIN) / tileStride);
+		int row = (int) ((mouseY - MARGIN) / tileStride);
+		if (column >= config.getRowLength()
+				|| (mouseX - MARGIN) % tileStride >= tileSize
+				|| (mouseY - MARGIN) % tileStride >= tileSize) {
+			return null;
+		}
+
+		int entryIndex = row * config.getRowLength() + column;
+		return entryIndex >= 0 && entryIndex < entries.size() ? entries.get(entryIndex) : null;
+	}
+
+	private static GridSlot gridSlot(int index, SpawnDisplayConfig config) {
+		int tileStride = config.getTileSize() + config.getSpacing();
+		int column = index % config.getRowLength();
+		int row = index / config.getRowLength();
+		return new GridSlot(MARGIN + column * tileStride, MARGIN + row * tileStride);
+	}
+
+	private static int settingsButtonSize(int tileSize) {
+		return Math.max(1, tileSize / 2);
+	}
+
+	private static boolean contains(GridSlot slot, int size, double mouseX, double mouseY) {
+		return mouseX >= slot.x()
+				&& mouseX < slot.x() + size
+				&& mouseY >= slot.y()
+				&& mouseY < slot.y() + size;
 	}
 
 	private static void renderTile(
@@ -206,7 +378,21 @@ public final class SpawnHud {
 				y + tileSize - 1,
 				config.getBackgroundColor(tileStyle.backgroundColor())
 		);
-		if (entry.shiny() || entry.alpha() || entry.tera() || entry.fossilStatus()) {
+		if (isPinned(entry)) {
+			float borderAnimationProgress = config.shouldDisableSpriteAnimations()
+					? 0.0F
+					: ((client.world.getTime() % BORDER_ANIMATION_PERIOD_TICKS) + tickDelta)
+							/ BORDER_ANIMATION_PERIOD_TICKS;
+			renderAnimatedGradientBorder(
+					context,
+					x,
+					y,
+					tileSize,
+					borderAnimationProgress,
+					PINNED_BORDER_COLORS,
+					PINNED_BORDER_COLORS.length
+			);
+		} else if (entry.shiny() || entry.alpha() || entry.tera() || entry.fossilStatus()) {
 			float borderAnimationProgress = config.shouldDisableSpriteAnimations()
 					? 0.0F
 					: ((client.world.getTime() % BORDER_ANIMATION_PERIOD_TICKS) + tickDelta)
@@ -257,7 +443,11 @@ public final class SpawnHud {
 			String arrow = directionArrow(client.player, entry.entity());
 			int arrowWidth = textRenderer.getWidth(arrow);
 			int availableDistanceWidth = BASE_TILE_SIZE - arrowWidth - 6;
-			double distance = Math.sqrt(client.player.squaredDistanceTo(entry.entity()));
+			double distance = Math.sqrt(distanceSquared(
+					client.player,
+					entry.entity(),
+					config.shouldUseHorizontalDistance()
+			));
 			String distanceLabel = distanceLabel(textRenderer, distance, availableDistanceWidth);
 			int distanceWidth = textRenderer.getWidth(distanceLabel);
 			context.drawText(textRenderer, arrow, 2, BASE_FOOTER_Y_OFFSET, 0xFFFFFFFF, true);
@@ -536,6 +726,16 @@ public final class SpawnHud {
 		return DIRECTION_ARROWS[sector];
 	}
 
+	private static double distanceSquared(PlayerEntity player, Entity target, boolean horizontal) {
+		if (!horizontal) {
+			return player.squaredDistanceTo(target);
+		}
+
+		double deltaX = target.getX() - player.getX();
+		double deltaZ = target.getZ() - player.getZ();
+		return deltaX * deltaX + deltaZ * deltaZ;
+	}
+
 	private static String distanceLabel(TextRenderer textRenderer, double distance, int availableWidth) {
 		long blocks = Math.round(distance);
 		String label = blocks + "m";
@@ -576,11 +776,16 @@ public final class SpawnHud {
 		};
 	}
 
+	private static boolean isPinned(Entry entry) {
+		return entry.highlighted() || PINNED_ENTRIES.containsKey(entry.entity().getUuid());
+	}
+
 	private record Entry(
 			PokemonEntity entity,
 			RenderablePokemon renderablePokemon,
 			FloatingState avatarState,
 			Identifier species,
+			boolean highlighted,
 			Rarity rarity,
 			SpecialClassification specialClassification,
 			boolean shiny,
@@ -639,5 +844,8 @@ public final class SpawnHud {
 		private static TileStyle uniform(int color) {
 			return new TileStyle(color, color, color, color);
 		}
+	}
+
+	private record GridSlot(int x, int y) {
 	}
 }
