@@ -14,6 +14,7 @@
   "screen.cobblemon_spawn_display.highlight_remove": "Remove",
   "screen.cobblemon_spawn_display.highlight_remove_named": "Remove %s from Highlighted Spawns",
   "screen.cobblemon_spawn_display.highlight_no_matches": "No Pokémon match this search.",
+  "screen.cobblemon_spawn_display.highlight_all_selected": "All Pokémon are selected.",
   "screen.cobblemon_spawn_display.highlight_unavailable": "No Pokémon are available.",
   "screen.cobblemon_spawn_display.opacity": "Background opacity",
   "screen.cobblemon_spawn_display.row_length": "Row length",

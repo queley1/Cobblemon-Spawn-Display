@@ -52,7 +52,7 @@ public final class SpawnDisplayConfig {
 	private static final int DEFAULT_UPDATE_INTERVAL_TICKS = 5;
 	private static final boolean DEFAULT_SHOW_COMMONS = true;
 	private static final boolean DEFAULT_DISABLE_SPRITE_ANIMATIONS = false;
-	private static final boolean DEFAULT_HORIZONTAL_DISTANCE = false;
+	private static final boolean DEFAULT_HORIZONTAL_DISTANCE = true;
 	private static final int UNKNOWN_RARITY_COLOR = 0xAAAAAA;
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
