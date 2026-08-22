@@ -48,7 +48,9 @@ spacing; the entity refresh interval (in ticks); and whether ordinary common
 Pokemon are shown. Commons with a Tera marker or special skin remain visible,
 like Shiny and Alpha commons. Animations can also be disabled; this freezes both avatars
 and animated borders while preserving the multi-color border treatment. They
-remain enabled by default. Shiny and Alpha commons are always shown.
+remain enabled by default. Distance can use absolute 3D distance or horizontal
+distance that ignores height; absolute distance remains the default. The chosen
+mode also controls nearest-first sorting. Shiny and Alpha commons are always shown.
 
 Tera is identified from the server's synced `mythical_wildtera` overworld
 aspect, Mega Showdown's `msd:tera_<type>` battle aspect, and its brief

@@ -112,7 +112,11 @@ public final class SpawnHud {
 				UUID entityId = pokemonEntity.getUuid();
 				visiblePokemon.add(entityId);
 				FloatingState avatarState = AVATAR_STATES.computeIfAbsent(entityId, ignored -> new FloatingState());
-				double distanceSquared = client.player.squaredDistanceTo(pokemonEntity);
+				double distanceSquared = distanceSquared(
+						client.player,
+						pokemonEntity,
+						config.shouldUseHorizontalDistance()
+				);
 
 				discovered.add(new Entry(
 						pokemonEntity,
@@ -257,7 +261,11 @@ public final class SpawnHud {
 			String arrow = directionArrow(client.player, entry.entity());
 			int arrowWidth = textRenderer.getWidth(arrow);
 			int availableDistanceWidth = BASE_TILE_SIZE - arrowWidth - 6;
-			double distance = Math.sqrt(client.player.squaredDistanceTo(entry.entity()));
+			double distance = Math.sqrt(distanceSquared(
+					client.player,
+					entry.entity(),
+					config.shouldUseHorizontalDistance()
+			));
 			String distanceLabel = distanceLabel(textRenderer, distance, availableDistanceWidth);
 			int distanceWidth = textRenderer.getWidth(distanceLabel);
 			context.drawText(textRenderer, arrow, 2, BASE_FOOTER_Y_OFFSET, 0xFFFFFFFF, true);
@@ -534,6 +542,16 @@ public final class SpawnHud {
 		float relativeYaw = MathHelper.wrapDegrees(targetYaw - player.getYaw());
 		int sector = Math.floorMod((int) Math.floor((relativeYaw + 22.5F) / 45.0F), DIRECTION_ARROWS.length);
 		return DIRECTION_ARROWS[sector];
+	}
+
+	private static double distanceSquared(PlayerEntity player, Entity target, boolean horizontal) {
+		if (!horizontal) {
+			return player.squaredDistanceTo(target);
+		}
+
+		double deltaX = target.getX() - player.getX();
+		double deltaZ = target.getZ() - player.getZ();
+		return deltaX * deltaX + deltaZ * deltaZ;
 	}
 
 	private static String distanceLabel(TextRenderer textRenderer, double distance, int availableWidth) {

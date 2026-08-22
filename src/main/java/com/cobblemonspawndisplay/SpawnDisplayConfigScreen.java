@@ -45,6 +45,7 @@ public final class SpawnDisplayConfigScreen extends Screen {
 	private SliderRow updateIntervalRow;
 	private ButtonWidget showCommonsButton;
 	private ButtonWidget disableSpriteAnimationsButton;
+	private ButtonWidget distanceModeButton;
 	private SliderRow hueRow;
 	private SliderRow saturationRow;
 	private SliderRow lightnessRow;
@@ -63,6 +64,7 @@ public final class SpawnDisplayConfigScreen extends Screen {
 		int contentWidth = Math.min(300, this.width - 24);
 		int contentX = (this.width - contentWidth) / 2;
 		int splitWidth = (contentWidth - 4) / 2;
+		int optionButtonWidth = (contentWidth - CONTROL_GAP * 2) * 3 / 10;
 
 		generalTab = addDrawableChild(ButtonWidget.builder(
 				Text.translatable("screen.cobblemon_spawn_display.general"),
@@ -97,19 +99,30 @@ public final class SpawnDisplayConfigScreen extends Screen {
 			config.setShowCommons(!config.shouldShowCommons());
 			updateShowCommonsButton();
 			settingsChanged();
-		}).dimensions(contentX, rowY + CONTROL_SPACING * 5, splitWidth, CONTROL_HEIGHT).build());
+		}).dimensions(contentX, rowY + CONTROL_SPACING * 5, optionButtonWidth, CONTROL_HEIGHT).build());
 		generalWidgets.add(showCommonsButton);
 		disableSpriteAnimationsButton = addDrawableChild(ButtonWidget.builder(disableSpriteAnimationsText(), button -> {
 			config.setDisableSpriteAnimations(!config.shouldDisableSpriteAnimations());
 			updateDisableSpriteAnimationsButton();
 			settingsChanged();
 		}).dimensions(
-				contentX + splitWidth + CONTROL_GAP,
+				contentX + optionButtonWidth + CONTROL_GAP,
 				rowY + CONTROL_SPACING * 5,
-				splitWidth,
+				optionButtonWidth,
 				CONTROL_HEIGHT
 		).build());
 		generalWidgets.add(disableSpriteAnimationsButton);
+		distanceModeButton = addDrawableChild(ButtonWidget.builder(distanceModeText(), button -> {
+			config.setHorizontalDistance(!config.shouldUseHorizontalDistance());
+			updateDistanceModeButton();
+			settingsChanged();
+		}).dimensions(
+				contentX + (optionButtonWidth + CONTROL_GAP) * 2,
+				rowY + CONTROL_SPACING * 5,
+				contentWidth - optionButtonWidth * 2 - CONTROL_GAP * 2,
+				CONTROL_HEIGHT
+		).build());
+		generalWidgets.add(distanceModeButton);
 
 		addColorTargetButtons(contentX, rowY, contentWidth);
 		Hsl hsl = rgbToHsl(selectedColorTarget.getColor(config));
@@ -381,6 +394,7 @@ public final class SpawnDisplayConfigScreen extends Screen {
 		config.setUpdateIntervalTicks(SpawnDisplayConfig.defaultUpdateIntervalTicks());
 		config.setShowCommons(SpawnDisplayConfig.defaultShowCommons());
 		config.setDisableSpriteAnimations(SpawnDisplayConfig.defaultDisableSpriteAnimations());
+		config.setHorizontalDistance(SpawnDisplayConfig.defaultHorizontalDistance());
 		for (Rarity rarity : Rarity.values()) {
 			config.setRarityColor(rarity, SpawnDisplayConfig.defaultRarityColor(rarity));
 		}
@@ -402,6 +416,7 @@ public final class SpawnDisplayConfigScreen extends Screen {
 		updateIntervalRow.slider().setIntValue(config.getUpdateIntervalTicks());
 		updateShowCommonsButton();
 		updateDisableSpriteAnimationsButton();
+		updateDistanceModeButton();
 		loadSelectedColor();
 		settingsChanged();
 	}
@@ -448,13 +463,24 @@ public final class SpawnDisplayConfigScreen extends Screen {
 
 	private Text disableSpriteAnimationsText() {
 		Text value = Text.translatable(SpawnDisplayConfig.get().shouldDisableSpriteAnimations()
-				? "screen.cobblemon_spawn_display.on"
-				: "screen.cobblemon_spawn_display.off");
+				? "screen.cobblemon_spawn_display.off"
+				: "screen.cobblemon_spawn_display.on");
 		return Text.translatable("screen.cobblemon_spawn_display.disable_sprite_animations_value", value);
 	}
 
 	private void updateDisableSpriteAnimationsButton() {
 		disableSpriteAnimationsButton.setMessage(disableSpriteAnimationsText());
+	}
+
+	private Text distanceModeText() {
+		Text value = Text.translatable(SpawnDisplayConfig.get().shouldUseHorizontalDistance()
+				? "screen.cobblemon_spawn_display.distance_horizontal"
+				: "screen.cobblemon_spawn_display.distance_absolute");
+		return Text.translatable("screen.cobblemon_spawn_display.distance_mode_value", value);
+	}
+
+	private void updateDistanceModeButton() {
+		distanceModeButton.setMessage(distanceModeText());
 	}
 
 	private void setError(String message) {

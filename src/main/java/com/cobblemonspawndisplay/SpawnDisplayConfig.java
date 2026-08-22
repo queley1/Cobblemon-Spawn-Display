@@ -49,6 +49,7 @@ public final class SpawnDisplayConfig {
 	private static final int DEFAULT_UPDATE_INTERVAL_TICKS = 5;
 	private static final boolean DEFAULT_SHOW_COMMONS = true;
 	private static final boolean DEFAULT_DISABLE_SPRITE_ANIMATIONS = false;
+	private static final boolean DEFAULT_HORIZONTAL_DISTANCE = false;
 	private static final int UNKNOWN_RARITY_COLOR = 0xAAAAAA;
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -75,6 +76,7 @@ public final class SpawnDisplayConfig {
 	private int updateIntervalTicks = DEFAULT_UPDATE_INTERVAL_TICKS;
 	private boolean showCommons = DEFAULT_SHOW_COMMONS;
 	private boolean disableSpriteAnimations = DEFAULT_DISABLE_SPRITE_ANIMATIONS;
+	private boolean horizontalDistance = DEFAULT_HORIZONTAL_DISTANCE;
 
 	private SpawnDisplayConfig() {
 	}
@@ -203,6 +205,10 @@ public final class SpawnDisplayConfig {
 		return disableSpriteAnimations;
 	}
 
+	public boolean shouldUseHorizontalDistance() {
+		return horizontalDistance;
+	}
+
 	public void setBackgroundOpacityPercent(int percent) {
 		backgroundOpacity = Math.round(clamp(percent, 0, 100) * 255.0F / 100.0F);
 	}
@@ -281,6 +287,10 @@ public final class SpawnDisplayConfig {
 		disableSpriteAnimations = value;
 	}
 
+	public void setHorizontalDistance(boolean value) {
+		horizontalDistance = value;
+	}
+
 	public static String colorToHex(int color) {
 		return String.format("#%06X", color & 0xFFFFFF);
 	}
@@ -311,6 +321,10 @@ public final class SpawnDisplayConfig {
 
 	public static boolean defaultDisableSpriteAnimations() {
 		return DEFAULT_DISABLE_SPRITE_ANIMATIONS;
+	}
+
+	public static boolean defaultHorizontalDistance() {
+		return DEFAULT_HORIZONTAL_DISTANCE;
 	}
 
 	public static int defaultRarityColor(Rarity rarity) {
@@ -409,6 +423,7 @@ public final class SpawnDisplayConfig {
 				"disableSpriteAnimations",
 				config.disableSpriteAnimations
 		);
+		config.horizontalDistance = readBoolean(json, "horizontalDistance", config.horizontalDistance);
 		config.sanitize();
 		return config;
 	}
@@ -436,6 +451,7 @@ public final class SpawnDisplayConfig {
 		json.addProperty("updateIntervalTicks", updateIntervalTicks);
 		json.addProperty("showCommons", showCommons);
 		json.addProperty("disableSpriteAnimations", disableSpriteAnimations);
+		json.addProperty("horizontalDistance", horizontalDistance);
 		return json;
 	}
 
