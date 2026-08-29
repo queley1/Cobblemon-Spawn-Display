@@ -14,8 +14,6 @@ first). Special skins display their marker without affecting sort order.
 Each 30-pixel square contains:
 
 - Cobblemon's own live species/form avatar
-- a green `✓` when the species is registered as owned in the Pokédex, or a red
-  `×` when it has not been caught or otherwise obtained
 - a main-class badge in the top-left: `C`, `U`, `R`, or `UR` when a standard
   rarity exists, otherwise `L`, `M`, `P`, `UB`, or `F` when applicable
 - `S`, `A`, a white `T`, a gold five-point star, and `F` status badges in the
@@ -24,7 +22,8 @@ Each 30-pixel square contains:
 - a main-class tile treatment: Legendary orange, Mythical yellow, Ultra Beast
   blue with a yellow border, Paradox violet with a red border and `P`, Fossil
   brown, or the standard rarity color
-- an eight-direction arrow and live distance beneath the avatar
+- an eight-direction arrow and live distance beneath the avatar, shown in
+  bright white for uncaught species and muted translucent gray once caught
 
 The Ultra Beast `UB` badge uses the same yellow as its border, and the Paradox
 `P` badge uses the same red as its border. Shiny, Alpha, Tera, and Fossil status

@@ -40,10 +40,10 @@ public final class SpawnHud {
 	private static final int SETTINGS_HOVER_BORDER_COLOR = 0xFFFFFFFF;
 	private static final int BORDER_ANIMATION_PERIOD_TICKS = 80;
 	private static final int[] PINNED_BORDER_COLORS = {0xFFFF6A00, 0xFFFFB347, 0xFFFF8C00};
-	private static final char CAUGHT_BADGE = '\u2713';
-	private static final char NOT_CAUGHT_BADGE = '\u00D7';
-	private static final int CAUGHT_BADGE_COLOR = 0x55FF55;
-	private static final int NOT_CAUGHT_BADGE_COLOR = 0xFF7777;
+	private static final int CAUGHT_TOOLTIP_COLOR = 0x55FF55;
+	private static final int NOT_CAUGHT_TOOLTIP_COLOR = 0xFF7777;
+	private static final int UNCAUGHT_FOOTER_COLOR = 0xFFFFFFFF;
+	private static final int CAUGHT_FOOTER_COLOR = 0xA0B8B8B8;
 	private static final char SPECIAL_SKIN_BADGE = '\uE000';
 	private static final int SPECIAL_SKIN_BADGE_SIZE = 9;
 	private static final Identifier SPECIAL_SKIN_BADGE_TEXTURE = Identifier.of(
@@ -262,7 +262,7 @@ public final class SpawnHud {
 			Text caughtStatus = Text.translatable(entry.caught()
 					? "hud.cobblemon_spawn_display.caught"
 					: "hud.cobblemon_spawn_display.not_caught").styled(style -> style.withColor(
-					entry.caught() ? CAUGHT_BADGE_COLOR : NOT_CAUGHT_BADGE_COLOR
+					entry.caught() ? CAUGHT_TOOLTIP_COLOR : NOT_CAUGHT_TOOLTIP_COLOR
 			));
 			Text tooltip = Text.empty()
 					.append(entry.entity().getName())
@@ -467,13 +467,14 @@ public final class SpawnHud {
 			));
 			String distanceLabel = distanceLabel(textRenderer, distance, availableDistanceWidth);
 			int distanceWidth = textRenderer.getWidth(distanceLabel);
-			context.drawText(textRenderer, arrow, 2, BASE_FOOTER_Y_OFFSET, 0xFFFFFFFF, true);
+			int footerColor = entry.caught() ? CAUGHT_FOOTER_COLOR : UNCAUGHT_FOOTER_COLOR;
+			context.drawText(textRenderer, arrow, 2, BASE_FOOTER_Y_OFFSET, footerColor, true);
 			context.drawText(
 					textRenderer,
 					distanceLabel,
 					BASE_TILE_SIZE - distanceWidth - 2,
 					BASE_FOOTER_Y_OFFSET,
-					0xFFE0E0E0,
+					footerColor,
 					true
 			);
 		} finally {
@@ -590,8 +591,6 @@ public final class SpawnHud {
 
 	private static Text statusBadgeText(char badge, SpawnDisplayConfig config) {
 		int color = switch (badge) {
-			case CAUGHT_BADGE -> CAUGHT_BADGE_COLOR;
-			case NOT_CAUGHT_BADGE -> NOT_CAUGHT_BADGE_COLOR;
 			case 'S' -> config == null ? 0xFFFFFF : config.getShinyColor();
 			case 'A' -> config == null ? 0xFFFFFF : config.getAlphaColor();
 			case 'T' -> config == null ? 0xFFFFFF : config.getTeraColor();
@@ -841,8 +840,7 @@ public final class SpawnHud {
 		}
 
 		private String statusBadges() {
-			StringBuilder badges = new StringBuilder(6);
-			badges.append(caught ? CAUGHT_BADGE : NOT_CAUGHT_BADGE);
+			StringBuilder badges = new StringBuilder(5);
 			if (shiny) {
 				badges.append('S');
 			}
