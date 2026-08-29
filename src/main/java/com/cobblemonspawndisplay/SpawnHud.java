@@ -43,9 +43,9 @@ public final class SpawnHud {
 	private static final int CAUGHT_TOOLTIP_COLOR = 0x55FF55;
 	private static final int NOT_CAUGHT_TOOLTIP_COLOR = 0xFF7777;
 	private static final int UNCAUGHT_FOOTER_COLOR = 0xFFFFFFFF;
-	private static final int CAUGHT_FOOTER_COLOR = 0xA0B8B8B8;
+	private static final int CAUGHT_FOOTER_COLOR = 0xCCB8B8B8;
 	private static final char SPECIAL_SKIN_BADGE = '\uE000';
-	private static final int SPECIAL_SKIN_BADGE_SIZE = 9;
+	private static final int SPECIAL_SKIN_BADGE_SIZE = 8;
 	private static final Identifier SPECIAL_SKIN_BADGE_TEXTURE = Identifier.of(
 			"cobblemon_spawn_display",
 			"textures/gui/special_skin_star.png"
@@ -427,7 +427,7 @@ public final class SpawnHud {
 				borderColors[borderColorCount++] = config.getTeraColor();
 			}
 			if (entry.fossilStatus()) {
-				borderColors[borderColorCount++] = config.getFossilColor();
+				borderColors[borderColorCount++] = config.getFossilAspectColor();
 			}
 			renderAnimatedGradientBorder(
 					context,
@@ -594,7 +594,7 @@ public final class SpawnHud {
 			case 'S' -> config == null ? 0xFFFFFF : config.getShinyColor();
 			case 'A' -> config == null ? 0xFFFFFF : config.getAlphaColor();
 			case 'T' -> config == null ? 0xFFFFFF : config.getTeraColor();
-			case 'F' -> config == null ? 0xFFFFFF : config.getFossilColor();
+			case 'F' -> config == null ? 0xFFFFFF : config.getFossilAspectColor();
 			default -> 0xFFFFFF;
 		};
 		return Text.literal(Character.toString(badge)).styled(style -> style
@@ -768,17 +768,42 @@ public final class SpawnHud {
 
 	private static TileStyle tileStyle(Entry entry, SpawnDisplayConfig config) {
 		if (entry.rarity() != null) {
-			return TileStyle.uniform(config.getRarityColor(entry.rarity()));
+			return new TileStyle(
+					config.getRarityBackgroundColor(entry.rarity()),
+					config.getRarityBorderColor(entry.rarity()),
+					config.getRarityBorderColor(entry.rarity()),
+					config.getRarityBorderColor(entry.rarity())
+			);
 		}
 
 		if (entry.specialClassification() == null) {
-			return TileStyle.uniform(config.getRarityColor(null));
+			return new TileStyle(
+					config.getRarityBackgroundColor(null),
+					config.getRarityBorderColor(null),
+					config.getRarityBorderColor(null),
+					config.getRarityBorderColor(null)
+			);
 		}
 
 		return switch (entry.specialClassification()) {
-			case LEGENDARY -> TileStyle.uniform(config.getLegendaryColor());
-			case MYTHICAL -> TileStyle.uniform(config.getMythicalColor());
-			case FOSSIL -> TileStyle.uniform(config.getFossilColor());
+			case LEGENDARY -> new TileStyle(
+					config.getLegendaryBackgroundColor(),
+					config.getLegendaryBorderColor(),
+					config.getLegendaryBorderColor(),
+					config.getLegendaryBorderColor()
+			);
+			case MYTHICAL -> new TileStyle(
+					config.getMythicalBackgroundColor(),
+					config.getMythicalBorderColor(),
+					config.getMythicalBorderColor(),
+					config.getMythicalBorderColor()
+			);
+			case FOSSIL -> new TileStyle(
+					config.getFossilAspectColor(),
+					config.getFossilAspectColor(),
+					config.getFossilAspectColor(),
+					config.getFossilAspectColor()
+			);
 			case PARADOX -> new TileStyle(
 					config.getParadoxBackgroundColor(),
 					config.getParadoxBorderColor(),
@@ -866,9 +891,6 @@ public final class SpawnHud {
 			int badgePrimaryColor,
 			int badgeSecondaryColor
 	) {
-		private static TileStyle uniform(int color) {
-			return new TileStyle(color, color, color, color);
-		}
 	}
 
 	private record GridSlot(int x, int y) {

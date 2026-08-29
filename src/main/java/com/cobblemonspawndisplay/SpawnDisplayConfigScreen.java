@@ -28,10 +28,13 @@ public final class SpawnDisplayConfigScreen extends Screen {
 	private static final int CONTROL_SPACING = 24;
 	private static final int RESET_BUTTON_WIDTH = 56;
 	private static final int CONTROL_GAP = 4;
-	private static final int COLOR_TARGET_COLUMNS = 7;
-	private static final int COLOR_PREVIEW_Y = 114;
-	private static final int COLOR_PREVIEW_HEIGHT = 20;
-	private static final int COLOR_SLIDER_Y = 140;
+	private static final int CUSTOMIZE_LIST_Y = 90;
+	private static final int CUSTOMIZE_ROW_HEIGHT = 34;
+	private static final int CUSTOMIZE_COLUMN_GAP = 8;
+	private static final int CUSTOMIZE_SLIDER_Y = 116;
+	private static final int PREVIEW_TILE_SIZE = 30;
+	private static final int ASPECT_PREVIEW_BACKGROUND_COLOR = 0x555555;
+	private static final int ASPECT_PREVIEW_BORDER_COLOR = 0xAAAAAA;
 	private static final int HIGHLIGHT_SUMMARY_Y = 66;
 	private static final int HIGHLIGHT_LIST_Y = 78;
 	private static final int HIGHLIGHT_LIST_BOTTOM_GAP = 6;
@@ -41,7 +44,9 @@ public final class SpawnDisplayConfigScreen extends Screen {
 
 	private final Screen parent;
 	private Page page = Page.GENERAL;
-	private ColorTarget selectedColorTarget = ColorTarget.COMMON;
+	private CustomizeTarget selectedCustomizeTarget = CustomizeTarget.COMMON;
+	private CustomizeRole selectedCustomizeRole = CustomizeRole.BACKGROUND;
+	private CustomizeCategory customizeCategory = CustomizeCategory.RARITIES;
 	private Text helperText = Text.translatable("screen.cobblemon_spawn_display.hint");
 	private boolean hasError;
 	private boolean dirty;
@@ -49,11 +54,10 @@ public final class SpawnDisplayConfigScreen extends Screen {
 
 	private ButtonWidget generalTab;
 	private ButtonWidget highlightsTab;
-	private ButtonWidget colorsTab;
+	private ButtonWidget customizeTab;
 	private final List<ClickableWidget> generalWidgets = new ArrayList<>();
 	private final List<ClickableWidget> highlightWidgets = new ArrayList<>();
-	private final List<ClickableWidget> colorWidgets = new ArrayList<>();
-	private final List<ButtonWidget> colorTargetButtons = new ArrayList<>();
+	private final List<ClickableWidget> customizeWidgets = new ArrayList<>();
 	private SliderRow opacityRow;
 	private SliderRow rowLengthRow;
 	private SliderRow tileSizeRow;
@@ -67,6 +71,11 @@ public final class SpawnDisplayConfigScreen extends Screen {
 	private PokemonListWidget availablePokemonList;
 	private List<SpeciesOption> pokemonOptions = List.of();
 	private boolean highlightListsDirty;
+	private ButtonWidget raritiesButton;
+	private ButtonWidget aspectsButton;
+	private ButtonWidget backgroundRoleButton;
+	private ButtonWidget borderRoleButton;
+	private CustomizeListWidget customizeList;
 	private SliderRow hueRow;
 	private SliderRow saturationRow;
 	private SliderRow lightnessRow;
@@ -81,9 +90,8 @@ public final class SpawnDisplayConfigScreen extends Screen {
 		SpawnDisplayConfig config = SpawnDisplayConfig.get();
 		generalWidgets.clear();
 		highlightWidgets.clear();
-		colorWidgets.clear();
-		colorTargetButtons.clear();
-		int contentWidth = Math.min(300, this.width - 24);
+		customizeWidgets.clear();
+		int contentWidth = Math.min(420, this.width - 24);
 		int contentX = (this.width - contentWidth) / 2;
 		int splitWidth = (contentWidth - 4) / 2;
 		int tabWidth = (contentWidth - CONTROL_GAP * 2) / 3;
@@ -97,9 +105,9 @@ public final class SpawnDisplayConfigScreen extends Screen {
 				Text.translatable("screen.cobblemon_spawn_display.highlights"),
 				button -> setPage(Page.HIGHLIGHTS)
 		).dimensions(contentX + tabWidth + CONTROL_GAP, 40, tabWidth, CONTROL_HEIGHT).build());
-		colorsTab = addDrawableChild(ButtonWidget.builder(
-				Text.translatable("screen.cobblemon_spawn_display.colors"),
-				button -> setPage(Page.COLORS)
+		customizeTab = addDrawableChild(ButtonWidget.builder(
+				Text.translatable("screen.cobblemon_spawn_display.customize"),
+				button -> setPage(Page.CUSTOMIZE)
 		).dimensions(
 				contentX + (tabWidth + CONTROL_GAP) * 2,
 				40,
@@ -199,19 +207,67 @@ public final class SpawnDisplayConfigScreen extends Screen {
 		pokemonSearchField.setChangedListener(this::filterPokemonOptions);
 		refreshHighlightLists(true);
 
-		addColorTargetButtons(contentX, rowY, contentWidth);
-		Hsl hsl = rgbToHsl(selectedColorTarget.getColor(config));
-		hueRow = addSliderRow(contentX, COLOR_SLIDER_Y, contentWidth, 0, 359, hsl.hue(),
+		int customizeListWidth = Math.min(168, Math.max(120, contentWidth * 2 / 5));
+		int editorX = contentX + customizeListWidth + CUSTOMIZE_COLUMN_GAP;
+		int editorWidth = contentWidth - customizeListWidth - CUSTOMIZE_COLUMN_GAP;
+		int categoryButtonWidth = (customizeListWidth - CONTROL_GAP) / 2;
+		raritiesButton = addDrawableChild(ButtonWidget.builder(
+				Text.translatable("screen.cobblemon_spawn_display.rarities"),
+				ignored -> setCustomizeCategory(CustomizeCategory.RARITIES)
+		).dimensions(contentX, rowY, categoryButtonWidth, CONTROL_HEIGHT).build());
+		aspectsButton = addDrawableChild(ButtonWidget.builder(
+				Text.translatable("screen.cobblemon_spawn_display.aspects"),
+				ignored -> setCustomizeCategory(CustomizeCategory.ASPECTS)
+		).dimensions(
+				contentX + categoryButtonWidth + CONTROL_GAP,
+				rowY,
+				customizeListWidth - categoryButtonWidth - CONTROL_GAP,
+				CONTROL_HEIGHT
+		).build());
+		customizeWidgets.add(raritiesButton);
+		customizeWidgets.add(aspectsButton);
+
+		int customizeListHeight = Math.max(CUSTOMIZE_ROW_HEIGHT, availableBottom - CUSTOMIZE_LIST_Y);
+		customizeList = addDrawableChild(new CustomizeListWidget(
+				MinecraftClient.getInstance(),
+				customizeListWidth,
+				customizeListHeight,
+				CUSTOMIZE_LIST_Y,
+				CUSTOMIZE_ROW_HEIGHT
+		));
+		customizeList.setX(contentX);
+		customizeList.setTargets(customizeCategory);
+		customizeWidgets.add(customizeList);
+
+		int roleButtonWidth = (editorWidth - CONTROL_GAP) / 2;
+		backgroundRoleButton = addDrawableChild(ButtonWidget.builder(
+				Text.translatable("screen.cobblemon_spawn_display.background"),
+				ignored -> selectCustomizeRole(CustomizeRole.BACKGROUND)
+		).dimensions(editorX, 82, roleButtonWidth, CONTROL_HEIGHT).build());
+		borderRoleButton = addDrawableChild(ButtonWidget.builder(
+				Text.translatable("screen.cobblemon_spawn_display.border"),
+				ignored -> selectCustomizeRole(CustomizeRole.BORDER)
+		).dimensions(
+				editorX + roleButtonWidth + CONTROL_GAP,
+				82,
+				editorWidth - roleButtonWidth - CONTROL_GAP,
+				CONTROL_HEIGHT
+		).build());
+		customizeWidgets.add(backgroundRoleButton);
+		customizeWidgets.add(borderRoleButton);
+
+		Hsl hsl = rgbToHsl(selectedCustomizeTarget.getColor(config, selectedCustomizeRole));
+		hueRow = addSliderRow(editorX, CUSTOMIZE_SLIDER_Y, editorWidth, 0, 359, hsl.hue(),
 				"screen.cobblemon_spawn_display.hue", "°", value -> applySelectedColor(),
-				() -> defaultSelectedHsl().hue(), colorWidgets);
-		saturationRow = addSliderRow(contentX, COLOR_SLIDER_Y + CONTROL_SPACING, contentWidth,
+				() -> defaultSelectedHsl().hue(), customizeWidgets);
+		saturationRow = addSliderRow(editorX, CUSTOMIZE_SLIDER_Y + CONTROL_SPACING, editorWidth,
 				0, 100, hsl.saturation(),
 				"screen.cobblemon_spawn_display.saturation", "%", value -> applySelectedColor(),
-				() -> defaultSelectedHsl().saturation(), colorWidgets);
-		lightnessRow = addSliderRow(contentX, COLOR_SLIDER_Y + CONTROL_SPACING * 2, contentWidth,
+				() -> defaultSelectedHsl().saturation(), customizeWidgets);
+		lightnessRow = addSliderRow(editorX, CUSTOMIZE_SLIDER_Y + CONTROL_SPACING * 2, editorWidth,
 				0, 100, hsl.lightness(),
 				"screen.cobblemon_spawn_display.lightness", "%", value -> applySelectedColor(),
-				() -> defaultSelectedHsl().lightness(), colorWidgets);
+				() -> defaultSelectedHsl().lightness(), customizeWidgets);
 
 		addDrawableChild(ButtonWidget.builder(Text.translatable("screen.cobblemon_spawn_display.reset"), button -> resetAll())
 				.dimensions(contentX, buttonY, splitWidth, CONTROL_HEIGHT)
@@ -240,15 +296,29 @@ public final class SpawnDisplayConfigScreen extends Screen {
 	}
 
 	@Override
+	public boolean mouseScrolled(
+			double mouseX,
+			double mouseY,
+			double horizontalAmount,
+			double verticalAmount
+	) {
+		if (page == Page.CUSTOMIZE
+				&& customizeList != null
+				&& customizeList.scrollWithWheel(mouseX, mouseY, verticalAmount)) {
+			return true;
+		}
+		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+	}
+
+	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		updateResetButtonStates();
 		super.render(context, mouseX, mouseY, delta);
 		context.drawCenteredTextWithShadow(textRenderer, title, width / 2, 16, 0xFFFFFF);
 		context.drawCenteredTextWithShadow(textRenderer, helperText, width / 2, 28, hasError ? 0xFF5555 : 0xC0C0C0);
 
-		if (page == Page.COLORS) {
-			renderColorTargetButtons(context);
-			renderColorPreview(context);
+		if (page == Page.CUSTOMIZE) {
+			renderCustomizeSettings(context);
 		} else if (page == Page.HIGHLIGHTS) {
 			renderHighlightSettings(context);
 		}
@@ -300,32 +370,6 @@ public final class SpawnDisplayConfigScreen extends Screen {
 		return new SliderRow(slider, resetButton, resetValue);
 	}
 
-	private void addColorTargetButtons(int contentX, int y, int contentWidth) {
-		ColorTarget[] targets = ColorTarget.values();
-		int buttonWidth = (contentWidth - CONTROL_GAP * (COLOR_TARGET_COLUMNS - 1)) / COLOR_TARGET_COLUMNS;
-
-		for (int index = 0; index < targets.length; index++) {
-			ColorTarget target = targets[index];
-			int row = index / COLOR_TARGET_COLUMNS;
-			int column = index % COLOR_TARGET_COLUMNS;
-			int rowStart = row * COLOR_TARGET_COLUMNS;
-			int buttonsInRow = Math.min(COLOR_TARGET_COLUMNS, targets.length - rowStart);
-			int rowWidth = buttonsInRow * buttonWidth + (buttonsInRow - 1) * CONTROL_GAP;
-			int rowX = contentX + (contentWidth - rowWidth) / 2;
-			ButtonWidget button = addDrawableChild(ButtonWidget.builder(
-					target.buttonLabel(),
-					ignored -> selectColorTarget(target)
-			).dimensions(
-					rowX + column * (buttonWidth + CONTROL_GAP),
-					y + row * (CONTROL_HEIGHT + CONTROL_GAP),
-					buttonWidth,
-					CONTROL_HEIGHT
-			).build());
-			colorTargetButtons.add(button);
-			colorWidgets.add(button);
-		}
-	}
-
 	private void setPage(Page newPage) {
 		page = newPage;
 		if (newPage != Page.HIGHLIGHTS && pokemonSearchField != null) {
@@ -339,13 +383,14 @@ public final class SpawnDisplayConfigScreen extends Screen {
 	private void updatePageVisibility() {
 		boolean showGeneral = page == Page.GENERAL;
 		boolean showHighlights = page == Page.HIGHLIGHTS;
+		boolean showCustomize = page == Page.CUSTOMIZE;
 		generalWidgets.forEach(widget -> setVisible(widget, showGeneral));
 		highlightWidgets.forEach(widget -> setVisible(widget, showHighlights));
-		colorWidgets.forEach(widget -> setVisible(widget, page == Page.COLORS));
-		updateColorTargetButtonStates();
+		customizeWidgets.forEach(widget -> setVisible(widget, showCustomize));
+		updateCustomizeControlStates();
 		generalTab.active = !showGeneral;
 		highlightsTab.active = !showHighlights;
-		colorsTab.active = page != Page.COLORS;
+		customizeTab.active = !showCustomize;
 	}
 
 	private static void setVisible(ClickableWidget widget, boolean visible) {
@@ -353,18 +398,52 @@ public final class SpawnDisplayConfigScreen extends Screen {
 		widget.active = visible;
 	}
 
-	private void selectColorTarget(ColorTarget target) {
-		selectedColorTarget = target;
-		updateColorTargetButtonStates();
+	private void setCustomizeCategory(CustomizeCategory category) {
+		customizeCategory = category;
+		customizeList.setTargets(category);
+		if (selectedCustomizeTarget.category() != category) {
+			selectCustomizeTarget(category.firstTarget());
+		} else {
+			customizeList.selectTarget(selectedCustomizeTarget);
+			updateCustomizeControlStates();
+		}
+	}
+
+	private void selectCustomizeTarget(CustomizeTarget target) {
+		selectedCustomizeTarget = target;
+		if (!target.supportsBackground()) {
+			selectedCustomizeRole = CustomizeRole.BORDER;
+		}
+		customizeList.selectTarget(target);
+		updateCustomizeControlStates();
 		loadSelectedColor();
 	}
 
-	private void updateColorTargetButtonStates() {
-		colorTargetButtons.forEach(button -> button.active = page == Page.COLORS);
+	private void selectCustomizeRole(CustomizeRole role) {
+		if (role == CustomizeRole.BACKGROUND && !selectedCustomizeTarget.supportsBackground()) {
+			return;
+		}
+		selectedCustomizeRole = role;
+		updateCustomizeControlStates();
+		loadSelectedColor();
+	}
+
+	private void updateCustomizeControlStates() {
+		boolean showCustomize = page == Page.CUSTOMIZE;
+		raritiesButton.active = showCustomize && customizeCategory != CustomizeCategory.RARITIES;
+		aspectsButton.active = showCustomize && customizeCategory != CustomizeCategory.ASPECTS;
+		boolean showRoleButtons = showCustomize && selectedCustomizeTarget.supportsBackground();
+		backgroundRoleButton.visible = showRoleButtons;
+		backgroundRoleButton.active = showRoleButtons && selectedCustomizeRole != CustomizeRole.BACKGROUND;
+		borderRoleButton.visible = showRoleButtons;
+		borderRoleButton.active = showRoleButtons && selectedCustomizeRole != CustomizeRole.BORDER;
 	}
 
 	private void loadSelectedColor() {
-		Hsl hsl = rgbToHsl(selectedColorTarget.getColor(SpawnDisplayConfig.get()));
+		Hsl hsl = rgbToHsl(selectedCustomizeTarget.getColor(
+				SpawnDisplayConfig.get(),
+				selectedCustomizeRole
+		));
 		hueRow.slider().setIntValue(hsl.hue());
 		saturationRow.slider().setIntValue(hsl.saturation());
 		lightnessRow.slider().setIntValue(hsl.lightness());
@@ -379,85 +458,151 @@ public final class SpawnDisplayConfigScreen extends Screen {
 				saturationRow.slider().getIntValue(),
 				lightnessRow.slider().getIntValue()
 		);
-		selectedColorTarget.setColor(SpawnDisplayConfig.get(), color);
+		selectedCustomizeTarget.setColor(SpawnDisplayConfig.get(), selectedCustomizeRole, color);
 	}
 
 	private Hsl defaultSelectedHsl() {
-		return rgbToHsl(selectedColorTarget.defaultColor());
+		return rgbToHsl(selectedCustomizeTarget.defaultColor(selectedCustomizeRole));
 	}
 
-	private void renderColorTargetButtons(DrawContext context) {
-		ColorTarget[] targets = ColorTarget.values();
-		SpawnDisplayConfig config = SpawnDisplayConfig.get();
-		for (int index = 0; index < colorTargetButtons.size(); index++) {
-			ButtonWidget button = colorTargetButtons.get(index);
-			int color = targets[index].getColor(config);
-			boolean selected = targets[index] == selectedColorTarget;
-			int borderWidth = 1;
-			int borderColor = selected ? 0xFFFFFFFF : 0xFF000000;
+	private void renderCustomizeSettings(DrawContext context) {
+		int contentWidth = Math.min(420, this.width - 24);
+		int contentX = (this.width - contentWidth) / 2;
+		int customizeListWidth = Math.min(168, Math.max(120, contentWidth * 2 / 5));
+		int editorX = contentX + customizeListWidth + CUSTOMIZE_COLUMN_GAP;
+		int editorWidth = contentWidth - customizeListWidth - CUSTOMIZE_COLUMN_GAP;
+		int color = selectedCustomizeTarget.getColor(SpawnDisplayConfig.get(), selectedCustomizeRole);
+		String hex = SpawnDisplayConfig.colorToHex(color);
+		context.drawCenteredTextWithShadow(
+				textRenderer,
+				selectedCustomizeTarget.label(),
+				editorX + editorWidth / 2,
+				68,
+				0xFFFFFFFF
+		);
+		Text roleText = Text.translatable(selectedCustomizeRole.translationKey()).copy().append("  " + hex);
+		int roleY = selectedCustomizeTarget.supportsBackground() ? 105 : 88;
+		context.drawCenteredTextWithShadow(
+				textRenderer,
+				roleText,
+				editorX + editorWidth / 2,
+				roleY,
+				0xFFD0D0D0
+		);
+	}
 
-			context.fill(
-					button.getX(),
-					button.getY(),
-					button.getX() + button.getWidth(),
-					button.getY() + button.getHeight(),
-					borderColor
-			);
-			context.fill(
-					button.getX() + borderWidth,
-					button.getY() + borderWidth,
-					button.getX() + button.getWidth() - borderWidth,
-					button.getY() + button.getHeight() - borderWidth,
-					0xFF000000 | color
-			);
-			drawCenteredWhiteTextWithBlackShadow(
+	private void renderCustomizePreview(
+			DrawContext context,
+			CustomizeTarget target,
+			int x,
+			int y,
+			float tickDelta
+	) {
+		SpawnDisplayConfig config = SpawnDisplayConfig.get();
+		boolean aspect = target.category() == CustomizeCategory.ASPECTS;
+		int backgroundColor = aspect ? ASPECT_PREVIEW_BACKGROUND_COLOR : target.getBackgroundColor(config);
+		int borderColor = target.getBorderColor(config);
+
+		context.fill(
+				x + 1,
+				y + 1,
+				x + PREVIEW_TILE_SIZE - 1,
+				y + PREVIEW_TILE_SIZE - 1,
+				config.getBackgroundColor(backgroundColor)
+		);
+		if (aspect) {
+			renderPreviewGradientBorder(
 					context,
-					button.getMessage(),
-					button.getX() + button.getWidth() / 2,
-					button.getY() + 6
+					x,
+					y,
+					ASPECT_PREVIEW_BORDER_COLOR,
+					borderColor,
+					tickDelta
 			);
+		} else {
+			renderPreviewBorder(context, x, y, borderColor);
+		}
+
+		if (aspect) {
+			int badgeWidth = textRenderer.getWidth(target.badge());
+			context.drawText(
+					textRenderer,
+					target.badge(),
+					x + PREVIEW_TILE_SIZE - badgeWidth - 2,
+					y + 2,
+					0xFF000000 | borderColor,
+					true
+			);
+		} else {
+			context.drawText(textRenderer, target.badge(), x + 2, y + 2, 0xFF000000 | borderColor, true);
 		}
 	}
 
-	private void drawCenteredWhiteTextWithBlackShadow(
-			DrawContext context,
-			Text text,
-			int centerX,
-			int y
-	) {
-		int textX = centerX - textRenderer.getWidth(text) / 2;
-		context.drawText(textRenderer, text, textX + 1, y + 1, 0xFF000000, false);
-		context.drawText(textRenderer, text, textX, y, 0xFFFFFFFF, false);
+	private static void renderPreviewBorder(DrawContext context, int x, int y, int color) {
+		int argb = 0xFF000000 | color;
+		context.fill(x, y, x + PREVIEW_TILE_SIZE, y + 1, argb);
+		context.fill(x, y + PREVIEW_TILE_SIZE - 1, x + PREVIEW_TILE_SIZE, y + PREVIEW_TILE_SIZE, argb);
+		context.fill(x, y + 1, x + 1, y + PREVIEW_TILE_SIZE - 1, argb);
+		context.fill(x + PREVIEW_TILE_SIZE - 1, y + 1, x + PREVIEW_TILE_SIZE, y + PREVIEW_TILE_SIZE - 1, argb);
 	}
 
-	private void renderColorPreview(DrawContext context) {
-		int contentWidth = Math.min(300, this.width - 24);
-		int contentX = (this.width - contentWidth) / 2;
-		int color = selectedColorTarget.getColor(SpawnDisplayConfig.get());
-		context.fill(
-				contentX,
-				COLOR_PREVIEW_Y,
-				contentX + contentWidth,
-				COLOR_PREVIEW_Y + COLOR_PREVIEW_HEIGHT,
-				0xFF000000
-		);
-		context.fill(
-				contentX + 1,
-				COLOR_PREVIEW_Y + 1,
-				contentX + contentWidth - 1,
-				COLOR_PREVIEW_Y + COLOR_PREVIEW_HEIGHT - 1,
-				0xFF000000 | color
-		);
+	private static void renderPreviewGradientBorder(
+			DrawContext context,
+			int x,
+			int y,
+			int baseColor,
+			int aspectColor,
+			float tickDelta
+	) {
+		MinecraftClient client = MinecraftClient.getInstance();
+		long time = client.world == null ? System.currentTimeMillis() / 50L : client.world.getTime();
+		float progress = SpawnDisplayConfig.get().shouldDisableSpriteAnimations()
+				? 0.0F
+				: ((time % 80L) + tickDelta) / 80.0F;
+		int edgeLength = PREVIEW_TILE_SIZE - 1;
+		int perimeter = edgeLength * 4;
+		for (int index = 0; index < perimeter; index++) {
+			float position = index / (float) perimeter;
+			float gradientPosition = position - progress;
+			gradientPosition -= (float) Math.floor(gradientPosition);
+			float scaledPosition = gradientPosition * 2.0F;
+			int firstColor = scaledPosition < 1.0F ? baseColor : aspectColor;
+			int secondColor = scaledPosition < 1.0F ? aspectColor : baseColor;
+			float blend = scaledPosition - (float) Math.floor(scaledPosition);
+			int color = 0xFF000000 | blendPreviewColor(firstColor, secondColor, blend);
+			int pixelX;
+			int pixelY;
+			if (index < PREVIEW_TILE_SIZE) {
+				pixelX = x + index;
+				pixelY = y;
+			} else if (index < PREVIEW_TILE_SIZE + edgeLength) {
+				pixelX = x + edgeLength;
+				pixelY = y + index - PREVIEW_TILE_SIZE + 1;
+			} else if (index < PREVIEW_TILE_SIZE + edgeLength * 2) {
+				pixelX = x + edgeLength - 1 - (index - PREVIEW_TILE_SIZE - edgeLength);
+				pixelY = y + edgeLength;
+			} else {
+				pixelX = x;
+				pixelY = y + edgeLength - 1 - (index - PREVIEW_TILE_SIZE - edgeLength * 2);
+			}
+			context.fill(pixelX, pixelY, pixelX + 1, pixelY + 1, color);
+		}
+	}
 
-		String hex = SpawnDisplayConfig.colorToHex(color);
-		Text previewText = selectedColorTarget.label().copy().append("  " + hex);
-		int foreground = contrastingTextColor(color);
-		int textX = width / 2 - textRenderer.getWidth(previewText) / 2;
-		context.drawText(textRenderer, previewText, textX, COLOR_PREVIEW_Y + 6, foreground, false);
+	private static int blendPreviewColor(int first, int second, float amount) {
+		int red = blendPreviewChannel(first >> 16, second >> 16, amount);
+		int green = blendPreviewChannel(first >> 8, second >> 8, amount);
+		int blue = blendPreviewChannel(first, second, amount);
+		return red << 16 | green << 8 | blue;
+	}
+
+	private static int blendPreviewChannel(int first, int second, float amount) {
+		int firstChannel = first & 0xFF;
+		return Math.round(firstChannel + ((second & 0xFF) - firstChannel) * amount);
 	}
 
 	private void renderHighlightSettings(DrawContext context) {
-		int contentWidth = Math.min(300, this.width - 24);
+		int contentWidth = Math.min(420, this.width - 24);
 		int contentX = (this.width - contentWidth) / 2;
 		Set<String> highlighted = SpawnDisplayConfig.get().getHighlightedSpecies();
 		context.drawTextWithShadow(
@@ -561,22 +706,6 @@ public final class SpawnDisplayConfigScreen extends Screen {
 		highlightListsDirty = false;
 	}
 
-	private static int contrastingTextColor(int color) {
-		double luminance = 0.2126 * linearColorChannel(color >> 16 & 0xFF)
-				+ 0.7152 * linearColorChannel(color >> 8 & 0xFF)
-				+ 0.0722 * linearColorChannel(color & 0xFF);
-		double whiteContrast = 1.05 / (luminance + 0.05);
-		double blackContrast = (luminance + 0.05) / 0.05;
-		return whiteContrast >= blackContrast ? 0xFFFFFFFF : 0xFF000000;
-	}
-
-	private static double linearColorChannel(int channel) {
-		double normalized = channel / 255.0;
-		return normalized <= 0.04045
-				? normalized / 12.92
-				: Math.pow((normalized + 0.055) / 1.055, 2.4);
-	}
-
 	private void resetAll() {
 		SpawnDisplayConfig config = SpawnDisplayConfig.get();
 		config.setBackgroundOpacityPercent(SpawnDisplayConfig.defaultBackgroundOpacityPercent());
@@ -590,14 +719,17 @@ public final class SpawnDisplayConfigScreen extends Screen {
 		config.setHighlightedPokemon("");
 		highlightListsDirty = true;
 		for (Rarity rarity : Rarity.values()) {
-			config.setRarityColor(rarity, SpawnDisplayConfig.defaultRarityColor(rarity));
+			config.setRarityBackgroundColor(rarity, SpawnDisplayConfig.defaultRarityBackgroundColor(rarity));
+			config.setRarityBorderColor(rarity, SpawnDisplayConfig.defaultRarityBorderColor(rarity));
 		}
 		config.setShinyColor(SpawnDisplayConfig.defaultShinyColor());
 		config.setAlphaColor(SpawnDisplayConfig.defaultAlphaColor());
 		config.setTeraColor(SpawnDisplayConfig.defaultTeraColor());
-		config.setLegendaryColor(SpawnDisplayConfig.defaultLegendaryColor());
-		config.setMythicalColor(SpawnDisplayConfig.defaultMythicalColor());
-		config.setFossilColor(SpawnDisplayConfig.defaultFossilColor());
+		config.setLegendaryBackgroundColor(SpawnDisplayConfig.defaultLegendaryBackgroundColor());
+		config.setLegendaryBorderColor(SpawnDisplayConfig.defaultLegendaryBorderColor());
+		config.setMythicalBackgroundColor(SpawnDisplayConfig.defaultMythicalBackgroundColor());
+		config.setMythicalBorderColor(SpawnDisplayConfig.defaultMythicalBorderColor());
+		config.setFossilAspectColor(SpawnDisplayConfig.defaultFossilAspectColor());
 		config.setUltraBeastBackgroundColor(SpawnDisplayConfig.defaultUltraBeastBackgroundColor());
 		config.setUltraBeastBorderColor(SpawnDisplayConfig.defaultUltraBeastBorderColor());
 		config.setParadoxBackgroundColor(SpawnDisplayConfig.defaultParadoxBackgroundColor());
@@ -777,121 +909,179 @@ public final class SpawnDisplayConfigScreen extends Screen {
 	private enum Page {
 		GENERAL,
 		HIGHLIGHTS,
-		COLORS
+		CUSTOMIZE
 	}
 
-	private enum ColorTarget {
-		COMMON,
-		UNCOMMON,
-		RARE,
-		ULTRA_RARE,
-		LEGENDARY,
-		MYTHICAL,
-		FOSSIL,
-		ULTRA_BEAST_BACKGROUND,
-		ULTRA_BEAST_BORDER,
-		PARADOX_BACKGROUND,
-		PARADOX_BORDER,
-		SHINY,
-		ALPHA,
-		TERA;
+	private enum CustomizeCategory {
+		RARITIES,
+		ASPECTS;
 
-		private int getColor(SpawnDisplayConfig config) {
-			return switch (this) {
-				case COMMON, UNCOMMON, RARE, ULTRA_RARE -> config.getRarityColor(rarity());
-				case SHINY -> config.getShinyColor();
-				case ALPHA -> config.getAlphaColor();
-				case TERA -> config.getTeraColor();
-				case LEGENDARY -> config.getLegendaryColor();
-				case MYTHICAL -> config.getMythicalColor();
-				case FOSSIL -> config.getFossilColor();
-				case ULTRA_BEAST_BACKGROUND -> config.getUltraBeastBackgroundColor();
-				case ULTRA_BEAST_BORDER -> config.getUltraBeastBorderColor();
-				case PARADOX_BACKGROUND -> config.getParadoxBackgroundColor();
-				case PARADOX_BORDER -> config.getParadoxBorderColor();
-			};
+		private CustomizeTarget firstTarget() {
+			return this == RARITIES ? CustomizeTarget.COMMON : CustomizeTarget.SHINY;
+		}
+	}
+
+	private enum CustomizeRole {
+		BACKGROUND("screen.cobblemon_spawn_display.background"),
+		BORDER("screen.cobblemon_spawn_display.border");
+
+		private final String translationKey;
+
+		CustomizeRole(String translationKey) {
+			this.translationKey = translationKey;
 		}
 
-		private void setColor(SpawnDisplayConfig config, int color) {
-			switch (this) {
-				case COMMON, UNCOMMON, RARE, ULTRA_RARE -> config.setRarityColor(rarity(), color);
-				case SHINY -> config.setShinyColor(color);
-				case ALPHA -> config.setAlphaColor(color);
-				case TERA -> config.setTeraColor(color);
-				case LEGENDARY -> config.setLegendaryColor(color);
-				case MYTHICAL -> config.setMythicalColor(color);
-				case FOSSIL -> config.setFossilColor(color);
-				case ULTRA_BEAST_BACKGROUND -> config.setUltraBeastBackgroundColor(color);
-				case ULTRA_BEAST_BORDER -> config.setUltraBeastBorderColor(color);
-				case PARADOX_BACKGROUND -> config.setParadoxBackgroundColor(color);
-				case PARADOX_BORDER -> config.setParadoxBorderColor(color);
+		private String translationKey() {
+			return translationKey;
+		}
+	}
+
+	private enum CustomizeTarget {
+		COMMON(CustomizeCategory.RARITIES, "screen.cobblemon_spawn_display.common", "C"),
+		UNCOMMON(CustomizeCategory.RARITIES, "screen.cobblemon_spawn_display.uncommon", "U"),
+		RARE(CustomizeCategory.RARITIES, "screen.cobblemon_spawn_display.rare", "R"),
+		ULTRA_RARE(CustomizeCategory.RARITIES, "screen.cobblemon_spawn_display.ultra_rare", "UR"),
+		PARADOX(CustomizeCategory.RARITIES, "screen.cobblemon_spawn_display.paradox", "P"),
+		ULTRA_BEAST(CustomizeCategory.RARITIES, "screen.cobblemon_spawn_display.ultra_beast", "UB"),
+		LEGENDARY(CustomizeCategory.RARITIES, "screen.cobblemon_spawn_display.legendary", "L"),
+		MYTHICAL(CustomizeCategory.RARITIES, "screen.cobblemon_spawn_display.mythical", "M"),
+		SHINY(CustomizeCategory.ASPECTS, "screen.cobblemon_spawn_display.shiny", "S"),
+		ALPHA(CustomizeCategory.ASPECTS, "screen.cobblemon_spawn_display.alpha", "A"),
+		TERA(CustomizeCategory.ASPECTS, "screen.cobblemon_spawn_display.tera", "T"),
+		FOSSIL_ASPECT(CustomizeCategory.ASPECTS, "screen.cobblemon_spawn_display.fossil", "F");
+
+		private final CustomizeCategory category;
+		private final String labelKey;
+		private final String badge;
+
+		CustomizeTarget(CustomizeCategory category, String labelKey, String badge) {
+			this.category = category;
+			this.labelKey = labelKey;
+			this.badge = badge;
+		}
+
+		private CustomizeCategory category() {
+			return category;
+		}
+
+		private boolean supportsBackground() {
+			return category == CustomizeCategory.RARITIES;
+		}
+
+		private Text label() {
+			return Text.translatable(labelKey);
+		}
+
+		private String badge() {
+			return badge;
+		}
+
+		private int getColor(SpawnDisplayConfig config, CustomizeRole role) {
+			return role == CustomizeRole.BACKGROUND ? getBackgroundColor(config) : getBorderColor(config);
+		}
+
+		private void setColor(SpawnDisplayConfig config, CustomizeRole role, int color) {
+			if (role == CustomizeRole.BACKGROUND) {
+				setBackgroundColor(config, color);
+			} else {
+				setBorderColor(config, color);
 			}
 		}
 
-		private int defaultColor() {
+		private int defaultColor(CustomizeRole role) {
+			return role == CustomizeRole.BACKGROUND ? defaultBackgroundColor() : defaultBorderColor();
+		}
+
+		private int getBackgroundColor(SpawnDisplayConfig config) {
 			return switch (this) {
-				case COMMON, UNCOMMON, RARE, ULTRA_RARE -> SpawnDisplayConfig.defaultRarityColor(rarity());
-				case SHINY -> SpawnDisplayConfig.defaultShinyColor();
-				case ALPHA -> SpawnDisplayConfig.defaultAlphaColor();
-				case TERA -> SpawnDisplayConfig.defaultTeraColor();
-				case LEGENDARY -> SpawnDisplayConfig.defaultLegendaryColor();
-				case MYTHICAL -> SpawnDisplayConfig.defaultMythicalColor();
-				case FOSSIL -> SpawnDisplayConfig.defaultFossilColor();
-				case ULTRA_BEAST_BACKGROUND -> SpawnDisplayConfig.defaultUltraBeastBackgroundColor();
-				case ULTRA_BEAST_BORDER -> SpawnDisplayConfig.defaultUltraBeastBorderColor();
-				case PARADOX_BACKGROUND -> SpawnDisplayConfig.defaultParadoxBackgroundColor();
-				case PARADOX_BORDER -> SpawnDisplayConfig.defaultParadoxBorderColor();
+				case COMMON, UNCOMMON, RARE, ULTRA_RARE -> config.getRarityBackgroundColor(standardRarity());
+				case LEGENDARY -> config.getLegendaryBackgroundColor();
+				case MYTHICAL -> config.getMythicalBackgroundColor();
+				case ULTRA_BEAST -> config.getUltraBeastBackgroundColor();
+				case PARADOX -> config.getParadoxBackgroundColor();
+				case SHINY, ALPHA, TERA, FOSSIL_ASPECT ->
+						throw new IllegalStateException(this + " does not have a background color");
 			};
 		}
 
-		private Rarity rarity() {
+		private int getBorderColor(SpawnDisplayConfig config) {
+			return switch (this) {
+				case COMMON, UNCOMMON, RARE, ULTRA_RARE -> config.getRarityBorderColor(standardRarity());
+				case LEGENDARY -> config.getLegendaryBorderColor();
+				case MYTHICAL -> config.getMythicalBorderColor();
+				case ULTRA_BEAST -> config.getUltraBeastBorderColor();
+				case PARADOX -> config.getParadoxBorderColor();
+				case SHINY -> config.getShinyColor();
+				case ALPHA -> config.getAlphaColor();
+				case TERA -> config.getTeraColor();
+				case FOSSIL_ASPECT -> config.getFossilAspectColor();
+			};
+		}
+
+		private void setBackgroundColor(SpawnDisplayConfig config, int color) {
+			switch (this) {
+				case COMMON, UNCOMMON, RARE, ULTRA_RARE -> config.setRarityBackgroundColor(standardRarity(), color);
+				case LEGENDARY -> config.setLegendaryBackgroundColor(color);
+				case MYTHICAL -> config.setMythicalBackgroundColor(color);
+				case ULTRA_BEAST -> config.setUltraBeastBackgroundColor(color);
+				case PARADOX -> config.setParadoxBackgroundColor(color);
+				case SHINY, ALPHA, TERA, FOSSIL_ASPECT ->
+						throw new IllegalStateException(this + " does not have a background color");
+			}
+		}
+
+		private void setBorderColor(SpawnDisplayConfig config, int color) {
+			switch (this) {
+				case COMMON, UNCOMMON, RARE, ULTRA_RARE -> config.setRarityBorderColor(standardRarity(), color);
+				case LEGENDARY -> config.setLegendaryBorderColor(color);
+				case MYTHICAL -> config.setMythicalBorderColor(color);
+				case ULTRA_BEAST -> config.setUltraBeastBorderColor(color);
+				case PARADOX -> config.setParadoxBorderColor(color);
+				case SHINY -> config.setShinyColor(color);
+				case ALPHA -> config.setAlphaColor(color);
+				case TERA -> config.setTeraColor(color);
+				case FOSSIL_ASPECT -> config.setFossilAspectColor(color);
+			}
+		}
+
+		private int defaultBackgroundColor() {
+			return switch (this) {
+				case COMMON, UNCOMMON, RARE, ULTRA_RARE ->
+						SpawnDisplayConfig.defaultRarityBackgroundColor(standardRarity());
+				case LEGENDARY -> SpawnDisplayConfig.defaultLegendaryBackgroundColor();
+				case MYTHICAL -> SpawnDisplayConfig.defaultMythicalBackgroundColor();
+				case ULTRA_BEAST -> SpawnDisplayConfig.defaultUltraBeastBackgroundColor();
+				case PARADOX -> SpawnDisplayConfig.defaultParadoxBackgroundColor();
+				case SHINY, ALPHA, TERA, FOSSIL_ASPECT ->
+						throw new IllegalStateException(this + " does not have a background color");
+			};
+		}
+
+		private int defaultBorderColor() {
+			return switch (this) {
+				case COMMON, UNCOMMON, RARE, ULTRA_RARE ->
+						SpawnDisplayConfig.defaultRarityBorderColor(standardRarity());
+				case LEGENDARY -> SpawnDisplayConfig.defaultLegendaryBorderColor();
+				case MYTHICAL -> SpawnDisplayConfig.defaultMythicalBorderColor();
+				case ULTRA_BEAST -> SpawnDisplayConfig.defaultUltraBeastBorderColor();
+				case PARADOX -> SpawnDisplayConfig.defaultParadoxBorderColor();
+				case SHINY -> SpawnDisplayConfig.defaultShinyColor();
+				case ALPHA -> SpawnDisplayConfig.defaultAlphaColor();
+				case TERA -> SpawnDisplayConfig.defaultTeraColor();
+				case FOSSIL_ASPECT -> SpawnDisplayConfig.defaultFossilAspectColor();
+			};
+		}
+
+		private Rarity standardRarity() {
 			return switch (this) {
 				case COMMON -> Rarity.COMMON;
 				case UNCOMMON -> Rarity.UNCOMMON;
 				case RARE -> Rarity.RARE;
 				case ULTRA_RARE -> Rarity.ULTRA_RARE;
-				case SHINY, ALPHA, TERA, LEGENDARY, MYTHICAL, FOSSIL, ULTRA_BEAST_BACKGROUND, ULTRA_BEAST_BORDER,
-						PARADOX_BACKGROUND, PARADOX_BORDER ->
-						throw new IllegalStateException(this + " is not a rarity");
+				case LEGENDARY, MYTHICAL, ULTRA_BEAST, PARADOX,
+						SHINY, ALPHA, TERA, FOSSIL_ASPECT ->
+						throw new IllegalStateException(this + " is not a standard rarity");
 			};
-		}
-
-		private Text label() {
-			return Text.translatable(switch (this) {
-				case COMMON -> "screen.cobblemon_spawn_display.common";
-				case UNCOMMON -> "screen.cobblemon_spawn_display.uncommon";
-				case RARE -> "screen.cobblemon_spawn_display.rare";
-				case ULTRA_RARE -> "screen.cobblemon_spawn_display.ultra_rare";
-				case SHINY -> "screen.cobblemon_spawn_display.shiny";
-				case ALPHA -> "screen.cobblemon_spawn_display.alpha";
-				case TERA -> "screen.cobblemon_spawn_display.tera";
-				case LEGENDARY -> "screen.cobblemon_spawn_display.legendary";
-				case MYTHICAL -> "screen.cobblemon_spawn_display.mythical";
-				case FOSSIL -> "screen.cobblemon_spawn_display.fossil";
-				case ULTRA_BEAST_BACKGROUND -> "screen.cobblemon_spawn_display.ultra_beast_background";
-				case ULTRA_BEAST_BORDER -> "screen.cobblemon_spawn_display.ultra_beast_border";
-				case PARADOX_BACKGROUND -> "screen.cobblemon_spawn_display.paradox_background";
-				case PARADOX_BORDER -> "screen.cobblemon_spawn_display.paradox_border";
-			});
-		}
-
-		private Text buttonLabel() {
-			return Text.literal(switch (this) {
-				case COMMON -> "C";
-				case UNCOMMON -> "U";
-				case RARE -> "R";
-				case ULTRA_RARE -> "UR";
-				case LEGENDARY -> "L";
-				case MYTHICAL -> "M";
-				case FOSSIL -> "F";
-				case ULTRA_BEAST_BACKGROUND -> "UB-1";
-				case ULTRA_BEAST_BORDER -> "UB-2";
-				case PARADOX_BACKGROUND -> "P-1";
-				case PARADOX_BORDER -> "P-2";
-				case SHINY -> "S";
-				case ALPHA -> "A";
-				case TERA -> "T";
-			});
 		}
 	}
 
@@ -925,6 +1115,161 @@ public final class SpawnDisplayConfigScreen extends Screen {
 
 		private boolean matches(String query) {
 			return query.isEmpty() || searchText.contains(query);
+		}
+	}
+
+	private final class CustomizeListWidget extends AlwaysSelectedEntryListWidget<CustomizeEntry> {
+		private CustomizeListWidget(MinecraftClient client, int width, int height, int y, int itemHeight) {
+			super(client, width, height, y, itemHeight);
+			centerListVertically = false;
+		}
+
+		@Override
+		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+			return isInteractive() && super.mouseClicked(mouseX, mouseY, button);
+		}
+
+		@Override
+		public boolean mouseReleased(double mouseX, double mouseY, int button) {
+			return isInteractive() && super.mouseReleased(mouseX, mouseY, button);
+		}
+
+		@Override
+		public boolean mouseDragged(
+				double mouseX,
+				double mouseY,
+				int button,
+				double deltaX,
+				double deltaY
+		) {
+			return isInteractive() && super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+		}
+
+		@Override
+		public boolean mouseScrolled(
+				double mouseX,
+				double mouseY,
+				double horizontalAmount,
+				double verticalAmount
+		) {
+			return scrollWithWheel(mouseX, mouseY, verticalAmount);
+		}
+
+		private boolean scrollWithWheel(double mouseX, double mouseY, double verticalAmount) {
+			if (!isInteractive() || !isMouseOver(mouseX, mouseY) || verticalAmount == 0.0) {
+				return false;
+			}
+			setScrollAmount(getScrollAmount() - verticalAmount * CUSTOMIZE_ROW_HEIGHT);
+			return true;
+		}
+
+		@Override
+		public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+			return isInteractive() && super.keyPressed(keyCode, scanCode, modifiers);
+		}
+
+		private boolean isInteractive() {
+			return page == Page.CUSTOMIZE && visible && active;
+		}
+
+		private void setTargets(CustomizeCategory category) {
+			replaceEntries(List.of(CustomizeTarget.values()).stream()
+					.filter(target -> target.category() == category)
+					.map(CustomizeEntry::new)
+					.toList());
+			setScrollAmount(0.0);
+			selectTarget(selectedCustomizeTarget);
+		}
+
+		private void selectTarget(CustomizeTarget target) {
+			for (CustomizeEntry entry : children()) {
+				if (entry.target == target) {
+					setSelected(entry);
+					return;
+				}
+			}
+			setSelected(null);
+		}
+
+		@Override
+		protected boolean isSelectedEntry(int index) {
+			return false;
+		}
+
+		@Override
+		public int getRowWidth() {
+			return getWidth() - 12;
+		}
+
+		@Override
+		protected int getScrollbarX() {
+			return getRight() - 6;
+		}
+	}
+
+	private final class CustomizeEntry extends AlwaysSelectedEntryListWidget.Entry<CustomizeEntry> {
+		private final CustomizeTarget target;
+
+		private CustomizeEntry(CustomizeTarget target) {
+			this.target = target;
+		}
+
+		@Override
+		public void render(
+				DrawContext context,
+				int index,
+				int y,
+				int x,
+				int entryWidth,
+				int entryHeight,
+				int mouseX,
+				int mouseY,
+				boolean hovered,
+				float tickDelta
+		) {
+			boolean selected = target == selectedCustomizeTarget;
+			if (selected) {
+				context.fill(x - 2, y, x + entryWidth + 2, y + entryHeight - 1, 0x50000000);
+			} else if (hovered) {
+				context.fill(x - 2, y, x + entryWidth + 2, y + entryHeight - 1, 0x30000000);
+			}
+			context.fill(x, y + entryHeight - 1, x + entryWidth, y + entryHeight, 0x30FFFFFF);
+			renderCustomizePreview(context, target, x + 1, y + 1, tickDelta);
+
+			int nameX = x + PREVIEW_TILE_SIZE + 7;
+			int availableNameWidth = Math.max(0, x + entryWidth - nameX - 3);
+			String visibleName = textRenderer.trimToWidth(target.label().getString(), availableNameWidth);
+			context.drawText(
+					textRenderer,
+					visibleName,
+					nameX,
+					y + 12,
+					0xFFFFFFFF,
+					false
+			);
+		}
+
+		@Override
+		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+			if (button != GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+				return false;
+			}
+			selectCustomizeTarget(target);
+			return true;
+		}
+
+		@Override
+		public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+			if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_SPACE) {
+				selectCustomizeTarget(target);
+				return true;
+			}
+			return false;
+		}
+
+		@Override
+		public Text getNarration() {
+			return target.label().copy().append(target == selectedCustomizeTarget ? ". Selected" : "");
 		}
 	}
 

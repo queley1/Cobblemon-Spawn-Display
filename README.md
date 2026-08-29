@@ -54,22 +54,25 @@ side-by-side scrollable list shows the selected Pokemon and lets each one be
 removed. Matching spawns sort ahead of ordinary entries, use the same animated
 orange pinned border, and remain visible when ordinary commons are hidden.
 
-Open **Configure** from Mod Menu to access **Spawn Display Settings**. Each
-class and split-color role has its own selector button on the Colors page, so
-none are hidden behind a cycling control. Each selector's background previews
-its currently configured color. An optional shortcut can be assigned under
-Controls. Settings are stored client-side in
-`config/cobblemon_spawn_display.json` and include background opacity, custom
-HSL colors for each rarity, Legendary, Mythical, Fossil, both Ultra Beast color
-roles, both Paradox color roles, Shiny, Alpha, and Tera; row length; tile size;
-spacing; the entity refresh interval (in ticks); and whether ordinary common
-Pokemon are shown. Commons that match the highlight list, have a Tera marker,
-or have a special skin remain visible, as do Shiny and Alpha commons. Animations
-can also be disabled; this freezes both avatars
-and animated borders while preserving the multi-color border treatment. They
-remain enabled by default. Distance can use absolute 3D distance or horizontal
-distance that ignores height; horizontal distance is the default. The chosen
-mode also controls nearest-first sorting. Shiny and Alpha commons are always shown.
+Open **Configure** from Mod Menu to access **Spawn Display Settings**. The
+**Customize** page lists every rarity and aspect using a live example tile with
+a matching badge. Rarities have separate background and border controls. Shiny,
+Alpha, Tera, and Fossil aspects customize an animated border over a neutral
+preview tile. Fossil's aspect color
+also controls the background and border when Fossil is a Pokémon's main class.
+An optional shortcut can be assigned under Controls. Settings are stored
+client-side in `config/cobblemon_spawn_display.json` and include background
+opacity; custom HSL background and border colors for each listed rarity; aspect
+border colors; row length; tile size; spacing; the entity refresh interval (in
+ticks); and whether ordinary common Pokemon are shown. Existing one-color rarity
+settings migrate to matching background and border values. Commons that match
+the highlight list, have a Tera marker, or have a special skin remain visible,
+as do Shiny and Alpha commons. Animations can also be disabled; this freezes
+both avatars and animated borders while preserving the multi-color border
+treatment. They remain enabled by default. Distance can use absolute 3D distance
+or horizontal distance that ignores height; horizontal distance is the default.
+The chosen mode also controls nearest-first sorting. Shiny and Alpha commons are
+always shown.
 
 Tera is identified from the server's synced `mythical_wildtera` overworld
 aspect, Mega Showdown's `msd:tera_<type>` battle aspect, and its brief
