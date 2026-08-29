@@ -59,16 +59,22 @@ public final class SpawnDisplayConfig {
 	private static SpawnDisplayConfig instance = new SpawnDisplayConfig();
 
 	private int backgroundOpacity = DEFAULT_BACKGROUND_OPACITY;
-	private int commonColor = DEFAULT_COMMON_COLOR;
-	private int uncommonColor = DEFAULT_UNCOMMON_COLOR;
-	private int rareColor = DEFAULT_RARE_COLOR;
-	private int ultraRareColor = DEFAULT_ULTRA_RARE_COLOR;
+	private int commonBackgroundColor = DEFAULT_COMMON_COLOR;
+	private int commonBorderColor = DEFAULT_COMMON_COLOR;
+	private int uncommonBackgroundColor = DEFAULT_UNCOMMON_COLOR;
+	private int uncommonBorderColor = DEFAULT_UNCOMMON_COLOR;
+	private int rareBackgroundColor = DEFAULT_RARE_COLOR;
+	private int rareBorderColor = DEFAULT_RARE_COLOR;
+	private int ultraRareBackgroundColor = DEFAULT_ULTRA_RARE_COLOR;
+	private int ultraRareBorderColor = DEFAULT_ULTRA_RARE_COLOR;
 	private int shinyColor = DEFAULT_SHINY_COLOR;
 	private int alphaColor = DEFAULT_ALPHA_COLOR;
 	private int teraColor = DEFAULT_TERA_COLOR;
-	private int legendaryColor = DEFAULT_LEGENDARY_COLOR;
-	private int mythicalColor = DEFAULT_MYTHICAL_COLOR;
-	private int fossilColor = DEFAULT_FOSSIL_COLOR;
+	private int legendaryBackgroundColor = DEFAULT_LEGENDARY_COLOR;
+	private int legendaryBorderColor = DEFAULT_LEGENDARY_COLOR;
+	private int mythicalBackgroundColor = DEFAULT_MYTHICAL_COLOR;
+	private int mythicalBorderColor = DEFAULT_MYTHICAL_COLOR;
+	private int fossilAspectColor = DEFAULT_FOSSIL_COLOR;
 	private int ultraBeastBackgroundColor = DEFAULT_ULTRA_BEAST_BACKGROUND_COLOR;
 	private int ultraBeastBorderColor = DEFAULT_ULTRA_BEAST_BORDER_COLOR;
 	private int paradoxBackgroundColor = DEFAULT_PARADOX_BACKGROUND_COLOR;
@@ -133,16 +139,29 @@ public final class SpawnDisplayConfig {
 		return backgroundOpacity << 24 | darkenForBackground(color);
 	}
 
-	public int getRarityColor(Rarity rarity) {
+	public int getRarityBackgroundColor(Rarity rarity) {
 		if (rarity == null) {
 			return UNKNOWN_RARITY_COLOR;
 		}
 
 		return switch (rarity) {
-			case COMMON -> commonColor;
-			case UNCOMMON -> uncommonColor;
-			case RARE -> rareColor;
-			case ULTRA_RARE -> ultraRareColor;
+			case COMMON -> commonBackgroundColor;
+			case UNCOMMON -> uncommonBackgroundColor;
+			case RARE -> rareBackgroundColor;
+			case ULTRA_RARE -> ultraRareBackgroundColor;
+		};
+	}
+
+	public int getRarityBorderColor(Rarity rarity) {
+		if (rarity == null) {
+			return UNKNOWN_RARITY_COLOR;
+		}
+
+		return switch (rarity) {
+			case COMMON -> commonBorderColor;
+			case UNCOMMON -> uncommonBorderColor;
+			case RARE -> rareBorderColor;
+			case ULTRA_RARE -> ultraRareBorderColor;
 		};
 	}
 
@@ -158,16 +177,24 @@ public final class SpawnDisplayConfig {
 		return teraColor;
 	}
 
-	public int getLegendaryColor() {
-		return legendaryColor;
+	public int getLegendaryBackgroundColor() {
+		return legendaryBackgroundColor;
 	}
 
-	public int getMythicalColor() {
-		return mythicalColor;
+	public int getLegendaryBorderColor() {
+		return legendaryBorderColor;
 	}
 
-	public int getFossilColor() {
-		return fossilColor;
+	public int getMythicalBackgroundColor() {
+		return mythicalBackgroundColor;
+	}
+
+	public int getMythicalBorderColor() {
+		return mythicalBorderColor;
+	}
+
+	public int getFossilAspectColor() {
+		return fossilAspectColor;
 	}
 
 	public int getUltraBeastBackgroundColor() {
@@ -226,13 +253,23 @@ public final class SpawnDisplayConfig {
 		backgroundOpacity = Math.round(clamp(percent, 0, 100) * 255.0F / 100.0F);
 	}
 
-	public void setRarityColor(Rarity rarity, int color) {
+	public void setRarityBackgroundColor(Rarity rarity, int color) {
 		int rgb = sanitizeColor(color, UNKNOWN_RARITY_COLOR);
 		switch (rarity) {
-			case COMMON -> commonColor = rgb;
-			case UNCOMMON -> uncommonColor = rgb;
-			case RARE -> rareColor = rgb;
-			case ULTRA_RARE -> ultraRareColor = rgb;
+			case COMMON -> commonBackgroundColor = rgb;
+			case UNCOMMON -> uncommonBackgroundColor = rgb;
+			case RARE -> rareBackgroundColor = rgb;
+			case ULTRA_RARE -> ultraRareBackgroundColor = rgb;
+		}
+	}
+
+	public void setRarityBorderColor(Rarity rarity, int color) {
+		int rgb = sanitizeColor(color, UNKNOWN_RARITY_COLOR);
+		switch (rarity) {
+			case COMMON -> commonBorderColor = rgb;
+			case UNCOMMON -> uncommonBorderColor = rgb;
+			case RARE -> rareBorderColor = rgb;
+			case ULTRA_RARE -> ultraRareBorderColor = rgb;
 		}
 	}
 
@@ -248,16 +285,24 @@ public final class SpawnDisplayConfig {
 		teraColor = sanitizeColor(color, DEFAULT_TERA_COLOR);
 	}
 
-	public void setLegendaryColor(int color) {
-		legendaryColor = sanitizeColor(color, DEFAULT_LEGENDARY_COLOR);
+	public void setLegendaryBackgroundColor(int color) {
+		legendaryBackgroundColor = sanitizeColor(color, DEFAULT_LEGENDARY_COLOR);
 	}
 
-	public void setMythicalColor(int color) {
-		mythicalColor = sanitizeColor(color, DEFAULT_MYTHICAL_COLOR);
+	public void setLegendaryBorderColor(int color) {
+		legendaryBorderColor = sanitizeColor(color, DEFAULT_LEGENDARY_COLOR);
 	}
 
-	public void setFossilColor(int color) {
-		fossilColor = sanitizeColor(color, DEFAULT_FOSSIL_COLOR);
+	public void setMythicalBackgroundColor(int color) {
+		mythicalBackgroundColor = sanitizeColor(color, DEFAULT_MYTHICAL_COLOR);
+	}
+
+	public void setMythicalBorderColor(int color) {
+		mythicalBorderColor = sanitizeColor(color, DEFAULT_MYTHICAL_COLOR);
+	}
+
+	public void setFossilAspectColor(int color) {
+		fossilAspectColor = sanitizeColor(color, DEFAULT_FOSSIL_COLOR);
 	}
 
 	public void setUltraBeastBackgroundColor(int color) {
@@ -365,7 +410,15 @@ public final class SpawnDisplayConfig {
 		return DEFAULT_HORIZONTAL_DISTANCE;
 	}
 
-	public static int defaultRarityColor(Rarity rarity) {
+	public static int defaultRarityBackgroundColor(Rarity rarity) {
+		return defaultRarityColor(rarity);
+	}
+
+	public static int defaultRarityBorderColor(Rarity rarity) {
+		return defaultRarityColor(rarity);
+	}
+
+	private static int defaultRarityColor(Rarity rarity) {
 		return switch (rarity) {
 			case COMMON -> DEFAULT_COMMON_COLOR;
 			case UNCOMMON -> DEFAULT_UNCOMMON_COLOR;
@@ -386,15 +439,23 @@ public final class SpawnDisplayConfig {
 		return DEFAULT_TERA_COLOR;
 	}
 
-	public static int defaultLegendaryColor() {
+	public static int defaultLegendaryBackgroundColor() {
 		return DEFAULT_LEGENDARY_COLOR;
 	}
 
-	public static int defaultMythicalColor() {
+	public static int defaultLegendaryBorderColor() {
+		return DEFAULT_LEGENDARY_COLOR;
+	}
+
+	public static int defaultMythicalBackgroundColor() {
 		return DEFAULT_MYTHICAL_COLOR;
 	}
 
-	public static int defaultFossilColor() {
+	public static int defaultMythicalBorderColor() {
+		return DEFAULT_MYTHICAL_COLOR;
+	}
+
+	public static int defaultFossilAspectColor() {
 		return DEFAULT_FOSSIL_COLOR;
 	}
 
@@ -417,16 +478,30 @@ public final class SpawnDisplayConfig {
 	private static SpawnDisplayConfig fromJson(JsonObject json) {
 		SpawnDisplayConfig config = new SpawnDisplayConfig();
 		config.backgroundOpacity = readInt(json, "backgroundOpacity", config.backgroundOpacity);
-		config.commonColor = readColor(json, "commonColor", config.commonColor);
-		config.uncommonColor = readColor(json, "uncommonColor", config.uncommonColor);
-		config.rareColor = readColor(json, "rareColor", config.rareColor);
-		config.ultraRareColor = readColor(json, "ultraRareColor", config.ultraRareColor);
+		int legacyCommonColor = readColor(json, "commonColor", DEFAULT_COMMON_COLOR);
+		int legacyUncommonColor = readColor(json, "uncommonColor", DEFAULT_UNCOMMON_COLOR);
+		int legacyRareColor = readColor(json, "rareColor", DEFAULT_RARE_COLOR);
+		int legacyUltraRareColor = readColor(json, "ultraRareColor", DEFAULT_ULTRA_RARE_COLOR);
+		config.commonBackgroundColor = readColor(json, "commonBackgroundColor", legacyCommonColor);
+		config.commonBorderColor = readColor(json, "commonBorderColor", legacyCommonColor);
+		config.uncommonBackgroundColor = readColor(json, "uncommonBackgroundColor", legacyUncommonColor);
+		config.uncommonBorderColor = readColor(json, "uncommonBorderColor", legacyUncommonColor);
+		config.rareBackgroundColor = readColor(json, "rareBackgroundColor", legacyRareColor);
+		config.rareBorderColor = readColor(json, "rareBorderColor", legacyRareColor);
+		config.ultraRareBackgroundColor = readColor(json, "ultraRareBackgroundColor", legacyUltraRareColor);
+		config.ultraRareBorderColor = readColor(json, "ultraRareBorderColor", legacyUltraRareColor);
 		config.shinyColor = readColor(json, "shinyColor", config.shinyColor);
 		config.alphaColor = readColor(json, "alphaColor", config.alphaColor);
 		config.teraColor = readColor(json, "teraColor", config.teraColor);
-		config.legendaryColor = readColor(json, "legendaryColor", config.legendaryColor);
-		config.mythicalColor = readColor(json, "mythicalColor", config.mythicalColor);
-		config.fossilColor = readColor(json, "fossilColor", config.fossilColor);
+		int legacyLegendaryColor = readColor(json, "legendaryColor", DEFAULT_LEGENDARY_COLOR);
+		int legacyMythicalColor = readColor(json, "mythicalColor", DEFAULT_MYTHICAL_COLOR);
+		int legacyFossilColor = readColor(json, "fossilColor", DEFAULT_FOSSIL_COLOR);
+		config.legendaryBackgroundColor = readColor(json, "legendaryBackgroundColor", legacyLegendaryColor);
+		config.legendaryBorderColor = readColor(json, "legendaryBorderColor", legacyLegendaryColor);
+		config.mythicalBackgroundColor = readColor(json, "mythicalBackgroundColor", legacyMythicalColor);
+		config.mythicalBorderColor = readColor(json, "mythicalBorderColor", legacyMythicalColor);
+		int splitFossilBorderColor = readColor(json, "fossilBorderColor", legacyFossilColor);
+		config.fossilAspectColor = readColor(json, "fossilAspectColor", splitFossilBorderColor);
 		config.ultraBeastBackgroundColor = readColor(
 				json,
 				"ultraBeastBackgroundColor",
@@ -448,8 +523,11 @@ public final class SpawnDisplayConfig {
 			config.paradoxBackgroundColor = DEFAULT_PARADOX_BACKGROUND_COLOR;
 			config.paradoxBorderColor = DEFAULT_PARADOX_BORDER_COLOR;
 		}
-		if (!json.has("alphaColor") && config.ultraRareColor == LEGACY_DEFAULT_ULTRA_RARE_COLOR) {
-			config.ultraRareColor = DEFAULT_ULTRA_RARE_COLOR;
+		if (!json.has("alphaColor")
+				&& config.ultraRareBackgroundColor == LEGACY_DEFAULT_ULTRA_RARE_COLOR
+				&& config.ultraRareBorderColor == LEGACY_DEFAULT_ULTRA_RARE_COLOR) {
+			config.ultraRareBackgroundColor = DEFAULT_ULTRA_RARE_COLOR;
+			config.ultraRareBorderColor = DEFAULT_ULTRA_RARE_COLOR;
 		}
 		config.rowLength = readInt(json, "rowLength", config.rowLength);
 		config.tileSize = readInt(json, "tileSize", config.tileSize);
@@ -470,16 +548,22 @@ public final class SpawnDisplayConfig {
 	private JsonObject toJson() {
 		JsonObject json = new JsonObject();
 		json.addProperty("backgroundOpacity", backgroundOpacity);
-		json.addProperty("commonColor", colorToHex(commonColor));
-		json.addProperty("uncommonColor", colorToHex(uncommonColor));
-		json.addProperty("rareColor", colorToHex(rareColor));
-		json.addProperty("ultraRareColor", colorToHex(ultraRareColor));
+		json.addProperty("commonBackgroundColor", colorToHex(commonBackgroundColor));
+		json.addProperty("commonBorderColor", colorToHex(commonBorderColor));
+		json.addProperty("uncommonBackgroundColor", colorToHex(uncommonBackgroundColor));
+		json.addProperty("uncommonBorderColor", colorToHex(uncommonBorderColor));
+		json.addProperty("rareBackgroundColor", colorToHex(rareBackgroundColor));
+		json.addProperty("rareBorderColor", colorToHex(rareBorderColor));
+		json.addProperty("ultraRareBackgroundColor", colorToHex(ultraRareBackgroundColor));
+		json.addProperty("ultraRareBorderColor", colorToHex(ultraRareBorderColor));
 		json.addProperty("shinyColor", colorToHex(shinyColor));
 		json.addProperty("alphaColor", colorToHex(alphaColor));
 		json.addProperty("teraColor", colorToHex(teraColor));
-		json.addProperty("legendaryColor", colorToHex(legendaryColor));
-		json.addProperty("mythicalColor", colorToHex(mythicalColor));
-		json.addProperty("fossilColor", colorToHex(fossilColor));
+		json.addProperty("legendaryBackgroundColor", colorToHex(legendaryBackgroundColor));
+		json.addProperty("legendaryBorderColor", colorToHex(legendaryBorderColor));
+		json.addProperty("mythicalBackgroundColor", colorToHex(mythicalBackgroundColor));
+		json.addProperty("mythicalBorderColor", colorToHex(mythicalBorderColor));
+		json.addProperty("fossilAspectColor", colorToHex(fossilAspectColor));
 		json.addProperty("ultraBeastBackgroundColor", colorToHex(ultraBeastBackgroundColor));
 		json.addProperty("ultraBeastBorderColor", colorToHex(ultraBeastBorderColor));
 		json.addProperty("paradoxBackgroundColor", colorToHex(paradoxBackgroundColor));
@@ -497,16 +581,22 @@ public final class SpawnDisplayConfig {
 
 	private void sanitize() {
 		backgroundOpacity = clamp(backgroundOpacity, 0, 255);
-		commonColor = sanitizeColor(commonColor, DEFAULT_COMMON_COLOR);
-		uncommonColor = sanitizeColor(uncommonColor, DEFAULT_UNCOMMON_COLOR);
-		rareColor = sanitizeColor(rareColor, DEFAULT_RARE_COLOR);
-		ultraRareColor = sanitizeColor(ultraRareColor, DEFAULT_ULTRA_RARE_COLOR);
+		commonBackgroundColor = sanitizeColor(commonBackgroundColor, DEFAULT_COMMON_COLOR);
+		commonBorderColor = sanitizeColor(commonBorderColor, DEFAULT_COMMON_COLOR);
+		uncommonBackgroundColor = sanitizeColor(uncommonBackgroundColor, DEFAULT_UNCOMMON_COLOR);
+		uncommonBorderColor = sanitizeColor(uncommonBorderColor, DEFAULT_UNCOMMON_COLOR);
+		rareBackgroundColor = sanitizeColor(rareBackgroundColor, DEFAULT_RARE_COLOR);
+		rareBorderColor = sanitizeColor(rareBorderColor, DEFAULT_RARE_COLOR);
+		ultraRareBackgroundColor = sanitizeColor(ultraRareBackgroundColor, DEFAULT_ULTRA_RARE_COLOR);
+		ultraRareBorderColor = sanitizeColor(ultraRareBorderColor, DEFAULT_ULTRA_RARE_COLOR);
 		shinyColor = sanitizeColor(shinyColor, DEFAULT_SHINY_COLOR);
 		alphaColor = sanitizeColor(alphaColor, DEFAULT_ALPHA_COLOR);
 		teraColor = sanitizeColor(teraColor, DEFAULT_TERA_COLOR);
-		legendaryColor = sanitizeColor(legendaryColor, DEFAULT_LEGENDARY_COLOR);
-		mythicalColor = sanitizeColor(mythicalColor, DEFAULT_MYTHICAL_COLOR);
-		fossilColor = sanitizeColor(fossilColor, DEFAULT_FOSSIL_COLOR);
+		legendaryBackgroundColor = sanitizeColor(legendaryBackgroundColor, DEFAULT_LEGENDARY_COLOR);
+		legendaryBorderColor = sanitizeColor(legendaryBorderColor, DEFAULT_LEGENDARY_COLOR);
+		mythicalBackgroundColor = sanitizeColor(mythicalBackgroundColor, DEFAULT_MYTHICAL_COLOR);
+		mythicalBorderColor = sanitizeColor(mythicalBorderColor, DEFAULT_MYTHICAL_COLOR);
+		fossilAspectColor = sanitizeColor(fossilAspectColor, DEFAULT_FOSSIL_COLOR);
 		ultraBeastBackgroundColor = sanitizeColor(
 				ultraBeastBackgroundColor,
 				DEFAULT_ULTRA_BEAST_BACKGROUND_COLOR
