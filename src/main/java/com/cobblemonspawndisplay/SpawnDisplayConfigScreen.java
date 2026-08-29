@@ -934,6 +934,47 @@ public final class SpawnDisplayConfigScreen extends Screen {
 			centerListVertically = false;
 		}
 
+		@Override
+		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+			return isInteractive() && super.mouseClicked(mouseX, mouseY, button);
+		}
+
+		@Override
+		public boolean mouseReleased(double mouseX, double mouseY, int button) {
+			return isInteractive() && super.mouseReleased(mouseX, mouseY, button);
+		}
+
+		@Override
+		public boolean mouseDragged(
+				double mouseX,
+				double mouseY,
+				int button,
+				double deltaX,
+				double deltaY
+		) {
+			return isInteractive() && super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+		}
+
+		@Override
+		public boolean mouseScrolled(
+				double mouseX,
+				double mouseY,
+				double horizontalAmount,
+				double verticalAmount
+		) {
+			return isInteractive()
+					&& super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+		}
+
+		@Override
+		public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+			return isInteractive() && super.keyPressed(keyCode, scanCode, modifiers);
+		}
+
+		private boolean isInteractive() {
+			return page == Page.HIGHLIGHTS && visible && active;
+		}
+
 		private void setOptions(List<SpeciesOption> options, boolean resetScroll) {
 			double scrollAmount = getScrollAmount();
 			replaceEntries(options.stream().map(PokemonEntry::new).toList());

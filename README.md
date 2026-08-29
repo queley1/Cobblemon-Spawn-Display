@@ -14,6 +14,8 @@ first). Special skins display their marker without affecting sort order.
 Each 30-pixel square contains:
 
 - Cobblemon's own live species/form avatar
+- a green `✓` when the species is registered as owned in the Pokédex, or a red
+  `×` when it has not been caught or otherwise obtained
 - a main-class badge in the top-left: `C`, `U`, `R`, or `UR` when a standard
   rarity exists, otherwise `L`, `M`, `P`, `UB`, or `F` when applicable
 - `S`, `A`, a white `T`, a gold five-point star, and `F` status badges in the
@@ -36,8 +38,9 @@ has no background plate. Tile interiors are translucent and darkened for avatar
 contrast. Ultra rare remains pink by default. By default, 30-pixel tiles fill
 from left to right and wrap after eight entries.
 
-Whenever the mouse cursor is available, hover a Pokemon tile to see its name,
-or click it to pin it ahead of the normal sort order. Tooltips appear
+Whenever the mouse cursor is available, hover a Pokemon tile to see its name and
+explicit Caught / Not caught status, or click it to pin it ahead of the normal
+sort order. Tooltips appear
 immediately. The active screen and its controls always receive clicks first;
 tiles respond only to clicks they leave unhandled. Pinned tiles use an animated
 orange border, and the most recently pinned tile appears first. Click a pinned

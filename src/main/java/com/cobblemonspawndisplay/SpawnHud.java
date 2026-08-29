@@ -1,5 +1,7 @@
 package com.cobblemonspawndisplay;
 
+import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress;
+import com.cobblemon.mod.common.client.CobblemonClient;
 import com.cobblemon.mod.common.client.gui.PokemonGuiUtilsKt;
 import com.cobblemon.mod.common.client.gui.ProfileTransformType;
 import com.cobblemon.mod.common.client.render.models.blockbench.FloatingState;
@@ -38,6 +40,10 @@ public final class SpawnHud {
 	private static final int SETTINGS_HOVER_BORDER_COLOR = 0xFFFFFFFF;
 	private static final int BORDER_ANIMATION_PERIOD_TICKS = 80;
 	private static final int[] PINNED_BORDER_COLORS = {0xFFFF6A00, 0xFFFFB347, 0xFFFF8C00};
+	private static final char CAUGHT_BADGE = '\u2713';
+	private static final char NOT_CAUGHT_BADGE = '\u00D7';
+	private static final int CAUGHT_BADGE_COLOR = 0x55FF55;
+	private static final int NOT_CAUGHT_BADGE_COLOR = 0xFF7777;
 	private static final char SPECIAL_SKIN_BADGE = '\uE000';
 	private static final int SPECIAL_SKIN_BADGE_SIZE = 9;
 	private static final Identifier SPECIAL_SKIN_BADGE_TEXTURE = Identifier.of(
@@ -99,6 +105,7 @@ public final class SpawnHud {
 				boolean specialSkin = SpecialAppearance.hasSpecialSkin(pokemon);
 				boolean fossil = SpecialClassification.isFossil(pokemon);
 				boolean highlighted = config.shouldHighlight(species);
+				boolean caught = isCaught(species);
 				SpecialClassification specialClassification = rarity == null
 						? SpecialClassification.fromPokemon(pokemon)
 						: null;
@@ -141,6 +148,7 @@ public final class SpawnHud {
 						tera,
 						specialSkin,
 						fossilStatus,
+						caught,
 						distanceSquared
 				));
 			} catch (RuntimeException exception) {
@@ -251,7 +259,16 @@ public final class SpawnHud {
 		SpawnDisplayConfig config = SpawnDisplayConfig.get();
 		Entry entry = entryAt(mouseX, mouseY, config);
 		if (entry != null) {
-			context.drawTooltip(client.textRenderer, entry.entity().getName(), mouseX, mouseY);
+			Text caughtStatus = Text.translatable(entry.caught()
+					? "hud.cobblemon_spawn_display.caught"
+					: "hud.cobblemon_spawn_display.not_caught").styled(style -> style.withColor(
+					entry.caught() ? CAUGHT_BADGE_COLOR : NOT_CAUGHT_BADGE_COLOR
+			));
+			Text tooltip = Text.empty()
+					.append(entry.entity().getName())
+					.append(Text.literal(" - "))
+					.append(caughtStatus);
+			context.drawTooltip(client.textRenderer, tooltip, mouseX, mouseY);
 			return;
 		}
 
@@ -573,6 +590,8 @@ public final class SpawnHud {
 
 	private static Text statusBadgeText(char badge, SpawnDisplayConfig config) {
 		int color = switch (badge) {
+			case CAUGHT_BADGE -> CAUGHT_BADGE_COLOR;
+			case NOT_CAUGHT_BADGE -> NOT_CAUGHT_BADGE_COLOR;
 			case 'S' -> config == null ? 0xFFFFFF : config.getShinyColor();
 			case 'A' -> config == null ? 0xFFFFFF : config.getAlphaColor();
 			case 'T' -> config == null ? 0xFFFFFF : config.getTeraColor();
@@ -780,6 +799,12 @@ public final class SpawnHud {
 		return entry.highlighted() || PINNED_ENTRIES.containsKey(entry.entity().getUuid());
 	}
 
+	private static boolean isCaught(Identifier species) {
+		var pokedex = CobblemonClient.INSTANCE.getClientPokedexData();
+		return pokedex != null
+				&& pokedex.getKnowledgeForSpecies(species) == PokedexEntryProgress.OWNED;
+	}
+
 	private record Entry(
 			PokemonEntity entity,
 			RenderablePokemon renderablePokemon,
@@ -793,6 +818,7 @@ public final class SpawnHud {
 			boolean tera,
 			boolean specialSkin,
 			boolean fossilStatus,
+			boolean caught,
 			double distanceSquared
 	) {
 		private boolean hasClassification(SpecialClassification classification) {
@@ -815,7 +841,8 @@ public final class SpawnHud {
 		}
 
 		private String statusBadges() {
-			StringBuilder badges = new StringBuilder(5);
+			StringBuilder badges = new StringBuilder(6);
+			badges.append(caught ? CAUGHT_BADGE : NOT_CAUGHT_BADGE);
 			if (shiny) {
 				badges.append('S');
 			}

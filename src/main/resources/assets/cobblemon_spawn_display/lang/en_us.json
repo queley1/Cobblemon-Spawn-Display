@@ -1,6 +1,8 @@
 {
   "key.categories.cobblemon_spawn_display": "Cobblemon Spawn Display",
   "key.cobblemon_spawn_display.open_settings": "Open Spawn Display settings",
+  "hud.cobblemon_spawn_display.caught": "Caught",
+  "hud.cobblemon_spawn_display.not_caught": "Not caught",
   "screen.cobblemon_spawn_display.title": "Spawn Display Settings",
   "screen.cobblemon_spawn_display.hint": "Changes preview live and save automatically.",
   "screen.cobblemon_spawn_display.general": "General",
